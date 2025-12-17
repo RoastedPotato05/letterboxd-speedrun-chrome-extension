@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "Letterboxd Speedrun",
+  "version": "1.0",
+  "description": "wikipedia speedruns but for letterboxd",
+  "action": {
+    "default_path": "popup.html",
+    "default_title": "Letterboxd Speedrun"
+  },
+
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://letterboxd.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "all_frames": true,
+      "matches": ["https://letterboxd.com/*", "https://www.letterboxd.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["results.html", "results.js", "styles.css"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

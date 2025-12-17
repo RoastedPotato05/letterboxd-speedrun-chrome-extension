@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Letterboxd Speedrun</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Letterboxd Speedrun </h1>
+
+    <div id="victory" style="display:none;">
+      <h3>🎉 Yippeeee!</h3>
+      <p>You reached the goal webpage.</p>
+    </div>
+
+    <div class="search-block" id="search-block">
+      <label>Goal</label>
+      <input id="search-goal" placeholder="Search goal (e.g. https://letterboxd.com/actor/zendaya/)" autocomplete="off" />
+    </div>
+
+    <button id="start-run" class="primary">Start Run</button>
+    <button id="return" class="primary" style="display:none">Return</button>
+    <div id="status" class="status"></div>
+
+    <hr style="width:105%"/>
+
+    <div class="stopwatch-container">
+      <strong><div id="display">00:00.000</div></strong>
+      <button id="startStopButton">Start</button>
+      <button id="resetButton">Reset</button>
+    </div>
+
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
