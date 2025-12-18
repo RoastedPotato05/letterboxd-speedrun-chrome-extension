@@ -17,8 +17,8 @@ body {
   font-family: sans-serif, Helvetica, sans-serif, ;
   width: 420px;
   margin: 0;
-  padding: 12px; 
-  padding-bottom: 40px;
+  padding-left: 12px;
+  padding-top: 6px;
   /*
   #99AABB light gray text 
   #40BCF4 blue
@@ -32,8 +32,9 @@ body {
   /* font-size: large; */
 }
 .container h1 {
-  margin: 0 0 8px 0;
+  margin: 0 0 0px 0;
   font-size: 24px;
+  width: 106%;
 }
 .search-block {
   margin-bottom: 10px;
