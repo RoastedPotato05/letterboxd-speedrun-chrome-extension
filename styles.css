@@ -1,11 +1,34 @@
 /* styles.css - minimal styling */
+@font-face {
+  font-family: "Graphik";
+  src: url("font/Graphik Family/Graphik-Regular-Trial.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Graphik";
+  src: url("font/Graphik Family/Graphik-Semibold-Trial.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+}
+
 body {
-  font-family: Arial, Helvetica, sans-serif;
-  width: 360px;
+  font-family: sans-serif, Helvetica, sans-serif, ;
+  width: 420px;
   margin: 0;
-  padding: 12px;
-  color: #111;
-  background: #f9f9f9;
+  padding: 12px; 
+  padding-bottom: 40px;
+  /*
+  #99AABB light gray text 
+  #40BCF4 blue
+  #00E054 green
+  #FF8000 orange
+  */
+
+  color: #f8f8f8;
+  background: #202830;
+  justify-content: center;
   /* font-size: large; */
 }
 .container h1 {
@@ -20,8 +43,9 @@ input {
   width: 105%;
   padding: 6px 8px;
   box-sizing: border-box;
-  border: 1px solid #ccc;
+  border: 0px solid #FF8000;
   border-radius: 4px;
+  background: #99AABB;
 }
 .results {
   list-style: none;
@@ -46,7 +70,7 @@ input {
 .primary {
   display:block;
   width:105%;
-  background: #0b5fff;
+  background: #40BCF4;
   color: #fff;
   border:none;
   padding: 8px 10px;
@@ -57,4 +81,16 @@ input {
 .primary:disabled { background:#9bbcff; cursor:default; }
 .status { margin-top:8px; color: #444; font-size: 13px; }
 small { color: #666; }
+
+footer {
+    position: fixed; /* Fixes the position relative to the browser window */
+    bottom: 0;       /* Anchors it to the bottom edge */
+    left: 0;         /* Anchors it to the left edge */
+    width: 100%;     /* Ensures it spans the full width */
+    background-color: #202830;
+    color: white;
+    
+    padding: 10px 0;
+    height: var(--footer-h);
+}
 

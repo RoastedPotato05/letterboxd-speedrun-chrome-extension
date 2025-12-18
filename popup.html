@@ -4,39 +4,42 @@
   <meta charset="utf-8" />
   <title>Letterboxd Speedrun</title>
   <link rel="stylesheet" href="styles.css" />
+
 </head>
 <body>
-  <div class="container">
-    <h1 style="font-size: large;">Letterboxd Speedrun </h1>
+  <div class="container"  style="align-content: center;">
+    <h1 style="font-size: 32px; font-family: 'Graphik', sans-serif; font-weight: 600; letter-spacing: -1px;">Letterboxd Speedrun</h1>
 
-    <div id="victory" style="display:none; font-size: large;" >
-      <h3>🎉 Yippeeee!</h3>
-      <p>You reached the goal webpage.</p>
+    <div id="victory" style="display:none; font-size: large; font-family: 'Graphik', sans-serif; font-weight: 600;" >
+      🎉 Yippeeee! </br>
+      You reached the goal webpage.</br><br>
     </div>
 
     <div id="run-display" style="display: none;">
       <label for="goal"></label>
       <label for="path"></label>
-    </div>
+    </div><br>
 
     <div class="search-block" id="search-block">
-      <label>Goal</label>
-      <input id="search-goal" placeholder="Search goal (e.g. https://letterboxd.com/actor/zendaya/)" autocomplete="off" />
+      <label style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #99AABB;">GOAL</label>
+      <input id="search-goal" placeholder="Search goal (e.g. https://letterboxd.com/actor/zendaya/)" style="font-size: small; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #f8f8f8;" autocomplete="off" />
     </div>
 
-    <button id="start-run" class="primary">Start Run</button>
-    <button id="return" class="primary" style="display:none">Return</button>
+    <button id="start-run" class="primary" style="font-family: 'Graphik', sans-serif; font-weight: 600;">Start Run</button>
+    <button id="return" class="primary" style="display:none; font-family: 'Graphik', sans-serif;">Return</button>
     <div id="status" class="status"></div>
 
     <hr style="width:105%"/>
 
-    <div class="stopwatch-container" style="font-size: large;">
-      <strong><div id="display">00:00.000</div></strong>
-      <button id="startStopButton">Start</button>
-      <button id="resetButton">Reset</button>
-    </div>
-
+    <footer style="background: #202830;">
+      <div class="stopwatch-container" style="font-size: large;">
+        <strong><div id="display" style="font-family: 'Graphik', sans-serif; font-size: 64px; position: relative; left: 55px" >
+          <span id="minutes" style="color: #FF8000">00</span>:<span id="seconds" style="color: #00E054">00</span>.<span id="milliseconds" style="color: #40BCF4">000</span>
+        </div></strong>
+      </div>
+    </footer>
   </div>
+  <br><br><br><br><br>
 
   <script src="popup.js"></script>
 </body>

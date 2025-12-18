@@ -14,10 +14,21 @@ let difference = 0;
 let tInterval;
 let running = false;
 let uhhhhh = false;
+let music = false;
 let path = [];
 const display = document.getElementById("display");
 const startStopButton = document.getElementById("startStopButton");
 const resetButton = document.getElementById("resetButton");
+
+function fixGoalInput() {
+  console.log(goalInput.value);
+  inputArray = goalInput.value.split("/");
+  console.log(inputArray);
+  inputArray.pop();
+  inputArray.pop();
+  goalInput.value = inputArray.join("/") + "/";
+  console.log(goalInput.value);
+}
 
 
 
@@ -36,6 +47,8 @@ chrome.runtime.onMessage.addListener((message) => {           // listener for re
       startRunBtn.style.display = "none";
       victory.style.display = "block";
       returnBtn.style.display = "block";
+      playSound('sounds/fnaf.mp3');
+      playSound('sounds/happy_wheels.mp3');
       
     }
     else {
@@ -48,7 +61,7 @@ chrome.runtime.onMessage.addListener((message) => {           // listener for re
     }
 
     pathList = path.join(" => ");
-    runDisplay.querySelector("label[for='path']").innerHTML = `<br/><div style='font-size: large;'><b>Path:</b></div><div style='font-size: small;'>${pathList}</div>`;
+    runDisplay.querySelector("label[for='path']").innerHTML = `<br/><div style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 600;"><b>Path:</b></div><div style="font-size: small; font-family: 'Graphik', sans-serif; font-weight: 400; color: #99AABB;">${pathList}</div>`;
   }
   else {
     path = [];
@@ -59,6 +72,10 @@ chrome.runtime.onMessage.addListener((message) => {           // listener for re
 
 startRunBtn.addEventListener("click", async () => {         // listener for initializing the run on button click
   if (goalInput.value) {
+    if (goalInput.value.split("/").length > 6) {
+      fixGoalInput();
+    }
+    
 
     // get all recent letterboxd tabs
     const tabs = await chrome.tabs.query({ url: "https://letterboxd.com/*" });
@@ -76,7 +93,7 @@ startRunBtn.addEventListener("click", async () => {         // listener for init
     // hide goal text and box, display "path"
     searchBlock.style.display = "none";
     runDisplay.style.display = "block";
-    runDisplay.querySelector("label[for='goal']").innerHTML = `<b><div style="font-size: large;">Target URL: </div></b><div style="font-size: small;">${goalInput.value}</div>`;
+    runDisplay.querySelector("label[for='goal']").innerHTML = `<b><div style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 600;">Target URL: </div></b><div style="font-size: small; font-family: 'Graphik', sans-serif; font-weight: 400; color: #99AABB;">${goalInput.value}</div>`;
     
 
 
@@ -85,6 +102,10 @@ startRunBtn.addEventListener("click", async () => {         // listener for init
 
     // start stopwatch
     start();
+    if (!music) {
+      backgroundMusic('sounds/balatro.mp3');
+      music = true
+    }
   }
 });
 
@@ -93,15 +114,14 @@ returnBtn.addEventListener("click", async () => {         // listener for restar
   startRunBtn.style.display = "block";
   victory.style.display = "none";
   returnBtn.style.display = "none";
-  display.innerHTML = "00:00.000"
+  document.getElementById("minutes").textContent = "00";
+  document.getElementById("seconds").textContent = "00";
+  document.getElementById("milliseconds").textContent = "000";
   difference = 0;
 });
 
 
-startStopButton.addEventListener("click", startStop);     // stopwatch stuff thanks google ai
-resetButton.addEventListener("click", reset);
-
-function startStop() {
+function startStop() {                      // stopwatch stuff thanks google ai
   if (running) {
     stop();
   }
@@ -114,14 +134,12 @@ function start() {
   // Start the stopwatch
   startTime = Date.now() - difference;
   tInterval = setInterval(updateDisplay, 10); // Update every 10ms for precision
-  startStopButton.innerHTML = "Stop";
   running = true;
 }
 
 function stop() {
   // Stop the stopwatch
   clearInterval(tInterval);
-  startStopButton.innerHTML = "Start";
   running = false;
   difference = Date.now() - startTime; // Save elapsed time
 }
@@ -131,13 +149,14 @@ function reset() {
     clearInterval(tInterval);
     running = false;
     difference = 0;
-    startStopButton.innerHTML = "Start";
-    display.innerHTML = "00:00.000";
+    document.getElementById("minutes").textContent = "00";
+    document.getElementById("seconds").textContent = "00";
+    document.getElementById("milliseconds").textContent = "000";
 }
 
 function updateDisplay() {
     updatedTime = new Date(Date.now() - startTime);
-    let hours = updatedTime.getUTCHours();
+
     let minutes = updatedTime.getUTCMinutes();
     let seconds = updatedTime.getUTCSeconds();
     let milliseconds = updatedTime.getUTCMilliseconds();
@@ -145,7 +164,10 @@ function updateDisplay() {
     minutes = minutes < 10 ? "0" + minutes : minutes;
     seconds = seconds < 10 ? "0" + seconds : seconds;
     milliseconds = milliseconds < 100 ? milliseconds < 10 ? "00" + milliseconds : "0" + milliseconds : milliseconds;
-    display.innerHTML = minutes + ":" + seconds + "." + milliseconds;
+
+    document.getElementById("minutes").textContent = minutes;
+    document.getElementById("seconds").textContent = seconds;
+    document.getElementById("milliseconds").textContent = milliseconds;
 }
 
 
@@ -157,7 +179,7 @@ async function getBuffer(url) {
   return await audioContext.decodeAudioData(arrayBuffer);
 }
 
-async function playSound(url, volume = 0.2) {
+async function playSound(url, volume = 0.1) {
   if (audioContext.state === 'suspended') {
     await audioContext.resume(); // unlock audio on user interaction
   }
@@ -176,6 +198,23 @@ async function playSound(url, volume = 0.2) {
   source.start(0); // Play immediately
 }
 
-document.querySelector('button').addEventListener('click', () => {
-  
-});
+
+async function backgroundMusic(url, volume = 0.15) {
+  if (audioContext.state === 'suspended') {
+    await audioContext.resume();
+  }
+
+  const buffer = await getBuffer(url);
+
+  const source = audioContext.createBufferSource();
+  const gainNode = audioContext.createGain();
+  gainNode.gain.value = volume;
+
+  source.buffer = buffer;
+  source.loop = true;
+  source.connect(gainNode);
+  gainNode.connect(audioContext.destination);  
+
+  currentSource = source;
+  source.start();
+}
