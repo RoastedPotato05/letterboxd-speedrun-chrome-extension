@@ -41,7 +41,7 @@ body {
 }
 .search-block label { font-weight: bold; display:block; margin-bottom:4px; }
 input {
-  width: 105%;
+  width: 100%;
   padding: 6px 8px;
   box-sizing: border-box;
   border: 0px solid #FF8000;
@@ -70,7 +70,8 @@ input {
 .chosen { margin-top: 4px; font-size: 13px; color: #333; }
 .primary {
   display:block;
-  width:105%;
+  width:100%;
+  height: 60px;
   background: #40BCF4;
   color: #fff;
   border:none;

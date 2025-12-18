@@ -17,8 +17,6 @@ let uhhhhh = false;
 let music = false;
 let path = [];
 const display = document.getElementById("display");
-const startStopButton = document.getElementById("startStopButton");
-const resetButton = document.getElementById("resetButton");
 
 function fixGoalInput() {
   console.log(goalInput.value);
@@ -114,6 +112,7 @@ returnBtn.addEventListener("click", async () => {         // listener for restar
   startRunBtn.style.display = "block";
   victory.style.display = "none";
   returnBtn.style.display = "none";
+  runDisplay.style.display = "none";
   document.getElementById("minutes").textContent = "00";
   document.getElementById("seconds").textContent = "00";
   document.getElementById("milliseconds").textContent = "000";
