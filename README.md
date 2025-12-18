@@ -21,4 +21,4 @@
   
 
 ## Note:
-  Pretty much any redirect should work from a movie or cast's page, as a rule I usually limit myself to only cast/crew for movies, and no MCU because everyone's in the MCU
+  Pretty much any redirect should work from a movie or cast's page, as a rule I usually limit myself to only cast/crew for movies, and no MCU because everyone's in the MCU 
