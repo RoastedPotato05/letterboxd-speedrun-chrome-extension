@@ -6,7 +6,7 @@ body {
   padding: 12px;
   color: #111;
   background: #f9f9f9;
-  font-size: large;
+  /* font-size: large; */
 }
 .container h1 {
   margin: 0 0 8px 0;

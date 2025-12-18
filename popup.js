@@ -6,29 +6,60 @@ const status = document.getElementById("status");
 const searchBlock = document.getElementById("search-block");
 const victory = document.getElementById("victory");
 const returnBtn = document.getElementById("return");
+const runDisplay = document.getElementById("run-display");
 
 let startTime;
 let updatedTime;
 let difference = 0;
 let tInterval;
 let running = false;
+let uhhhhh = false;
+let path = [];
 const display = document.getElementById("display");
 const startStopButton = document.getElementById("startStopButton");
 const resetButton = document.getElementById("resetButton");
 
 
-chrome.runtime.onMessage.addListener((message) => {
-  if (message.value === goalInput.value) {
-    startStop();
-    searchBlock.style.display = "none";
-    startRunBtn.style.display = "none";
-    victory.style.display = "block";
-    returnBtn.style.display = "block";
+
+chrome.runtime.onMessage.addListener((message) => {           // listener for receiving info from navigating letterboxd pages
+  
+  if (uhhhhh && running) {
+    playSound('sounds/vine_boom.mp3');      // whenever a run starts 2 messages are sent and
+  }                                         // i dont want 2 vine booms so idk just dont play the first one
+  uhhhhh = true;
+  
+  if (running) {
+    if (message.payload.url === goalInput.value) {
+      path.push(message.payload.item);
+      stop();
+      searchBlock.style.display = "none";
+      startRunBtn.style.display = "none";
+      victory.style.display = "block";
+      returnBtn.style.display = "block";
+      
+    }
+    else {
+      item = message.payload.item;
+      if (path.includes(item)) {
+        index = path.findIndex(x => x === item);
+        path = path.slice(0, index)
+      }
+      path.push(item);
+    }
+
+    pathList = path.join(" => ");
+    runDisplay.querySelector("label[for='path']").innerHTML = `<br/><div style='font-size: large;'><b>Path:</b></div><div style='font-size: small;'>${pathList}</div>`;
+  }
+  else {
+    path = [];
   }
 });
 
-startRunBtn.addEventListener("click", async () => {
+
+
+startRunBtn.addEventListener("click", async () => {         // listener for initializing the run on button click
   if (goalInput.value) {
+
     // get all recent letterboxd tabs
     const tabs = await chrome.tabs.query({ url: "https://letterboxd.com/*" });
 
@@ -42,12 +73,22 @@ startRunBtn.addEventListener("click", async () => {
     // Send a message to the content script running in that tab
     chrome.tabs.sendMessage(tab.id, { type: "refresh" });
 
+    // hide goal text and box, display "path"
+    searchBlock.style.display = "none";
+    runDisplay.style.display = "block";
+    runDisplay.querySelector("label[for='goal']").innerHTML = `<b><div style="font-size: large;">Target URL: </div></b><div style="font-size: small;">${goalInput.value}</div>`;
+    
+
+
+    // hide start run button
+    startRunBtn.style.display = "none";
+
     // start stopwatch
-    startStop();
+    start();
   }
 });
 
-returnBtn.addEventListener("click", async () => {
+returnBtn.addEventListener("click", async () => {         // listener for restarting on return button click
   searchBlock.style.display = "block";
   startRunBtn.style.display = "block";
   victory.style.display = "none";
@@ -57,24 +98,32 @@ returnBtn.addEventListener("click", async () => {
 });
 
 
-
-startStopButton.addEventListener("click", startStop);
+startStopButton.addEventListener("click", startStop);     // stopwatch stuff thanks google ai
 resetButton.addEventListener("click", reset);
 
 function startStop() {
-    if (!running) {
-        // Start the stopwatch
-        startTime = Date.now() - difference;
-        tInterval = setInterval(updateDisplay, 10); // Update every 10ms for precision
-        startStopButton.innerHTML = "Stop";
-        running = true;
-    } else {
-        // Stop the stopwatch
-        clearInterval(tInterval);
-        startStopButton.innerHTML = "Start";
-        running = false;
-        difference = Date.now() - startTime; // Save elapsed time
-    }
+  if (running) {
+    stop();
+  }
+  else {
+    start();
+  }
+}
+
+function start() {
+  // Start the stopwatch
+  startTime = Date.now() - difference;
+  tInterval = setInterval(updateDisplay, 10); // Update every 10ms for precision
+  startStopButton.innerHTML = "Stop";
+  running = true;
+}
+
+function stop() {
+  // Stop the stopwatch
+  clearInterval(tInterval);
+  startStopButton.innerHTML = "Start";
+  running = false;
+  difference = Date.now() - startTime; // Save elapsed time
 }
 
 function reset() {
@@ -99,107 +148,34 @@ function updateDisplay() {
     display.innerHTML = minutes + ":" + seconds + "." + milliseconds;
 }
 
-// display.innerHTML = goalInput.value
 
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();      // sound effects
 
-// let startItem = null;
-// let goalItem = null;
-// let searchTimer = null;
+async function getBuffer(url) {
+  const response = await fetch(url);
+  const arrayBuffer = await response.arrayBuffer();
+  return await audioContext.decodeAudioData(arrayBuffer);
+}
 
-// function debounce(fn, wait) {
-//   let t;
-//   return (...args) => {
-//     clearTimeout(t);
-//     t = setTimeout(() => fn(...args), wait);
-//   };
-// }
+async function playSound(url, volume = 0.2) {
+  if (audioContext.state === 'suspended') {
+    await audioContext.resume(); // unlock audio on user interaction
+  }
 
-// async function doSearch(query) {
-//   if (!query || query.trim().length === 0) return [];
-//   return new Promise((resolve) => {
-//     chrome.runtime.sendMessage({ type: "search", query }, resp => {
-//       resolve((resp && resp.results) || []);
-//     });
-//   });
-// }
+  const soundBuffer = await getBuffer(url);
+  const source = audioContext.createBufferSource();
+  source.buffer = soundBuffer;
 
-// function renderResults(listEl, items, onSelect) {
-//   listEl.innerHTML = "";
-//   if (!items || items.length === 0) {
-//     const li = document.createElement("li");
-//     li.textContent = "No results";
-//     listEl.appendChild(li);
-//     return;
-//   }
-//   for (const it of items) {
-//     const li = document.createElement("li");
-//     if (it.thumb) {
-//       const img = document.createElement("img");
-//       img.src = it.thumb;
-//       li.appendChild(img);
-//     }
-//     const txt = document.createElement("div");
-//     txt.innerHTML = `<strong>${escapeHtml(it.name)}</strong><div style="font-size:12px;color:#666">${it.url.replace("https://letterboxd.com","")}</div>`;
-//     li.appendChild(txt);
-//     li.addEventListener("click", () => onSelect(it));
-//     listEl.appendChild(li);
-//   }
-// }
+  // Create a gain node to control volume
+  const gainNode = audioContext.createGain();
+  gainNode.gain.value = volume; // 0 = silent, 1 = full volume
 
-// function escapeHtml(s) {
-//   return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]);
-// }
+   source.connect(gainNode);
+  gainNode.connect(audioContext.destination);
 
-// const doStartSearch = debounce(async () => {
-//   const q = startInput.value.trim();
-//   startResults.innerHTML = "<li>Searching…</li>";
-//   const items = await doSearch(q);
-//   renderResults(startResults, items, (it) => {
-//     startItem = it;
-//     startChosen.textContent = `${it.name} — ${it.url.replace("https://letterboxd.com", "")}`;
-//     startResults.innerHTML = "";
-//     maybeEnableStart();
-//   });
-// }, 300);
+  source.start(0); // Play immediately
+}
 
-// const doGoalSearch = debounce(async () => {
-//   const q = goalInput.value.trim();
-//   goalResults.innerHTML = "<li>Searching…</li>";
-//   const items = await doSearch(q);
-//   renderResults(goalResults, items, (it) => {
-//     goalItem = it;
-//     goalChosen.textContent = `${it.name} — ${it.url.replace("https://letterboxd.com", "")}`;
-//     goalResults.innerHTML = "";
-//     maybeEnableStart();
-//   });
-// }, 300);
-
-// startInput.addEventListener("input", doStartSearch);
-// goalInput.addEventListener("input", doGoalSearch);
-
-// function maybeEnableStart() {
-//   startRunBtn.disabled = !(startItem && goalItem);
-// }
-
-// startRunBtn.addEventListener("click", async () => {
-//   if (!startItem || !goalItem) return;
-//   startRunBtn.disabled = true;
-//   status.textContent = "Starting run…";
-//   chrome.runtime.sendMessage({ type: "startRun", startURL: startItem.url, goalURL: goalItem.url }, resp => {
-//     if (resp && resp.ok) {
-//       status.textContent = "Run started — navigate in the tab to begin. Timer will start on the start page.";
-//     } else {
-//       status.textContent = "Error starting run.";
-//     }
-//     setTimeout(() => { startRunBtn.disabled = false; }, 700);
-//   });
-// });
-
-// // optionally load last run info (nice UX)
-// document.addEventListener("DOMContentLoaded", () => {
-//   chrome.storage.local.get(["wikiRun"], data => {
-//     if (data && data.wikiRun) {
-//       status.textContent = "Saved run: will start on next Start Run (or when you click Start).";
-//     }
-//   });
-// });
+document.querySelector('button').addEventListener('click', () => {
+  
+});

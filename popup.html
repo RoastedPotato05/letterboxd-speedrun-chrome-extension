@@ -7,11 +7,16 @@
 </head>
 <body>
   <div class="container">
-    <h1>Letterboxd Speedrun </h1>
+    <h1 style="font-size: large;">Letterboxd Speedrun </h1>
 
-    <div id="victory" style="display:none;">
+    <div id="victory" style="display:none; font-size: large;" >
       <h3>🎉 Yippeeee!</h3>
       <p>You reached the goal webpage.</p>
+    </div>
+
+    <div id="run-display" style="display: none;">
+      <label for="goal"></label>
+      <label for="path"></label>
     </div>
 
     <div class="search-block" id="search-block">
@@ -25,7 +30,7 @@
 
     <hr style="width:105%"/>
 
-    <div class="stopwatch-container">
+    <div class="stopwatch-container" style="font-size: large;">
       <strong><div id="display">00:00.000</div></strong>
       <button id="startStopButton">Start</button>
       <button id="resetButton">Reset</button>
