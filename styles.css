@@ -65,8 +65,7 @@ input {
   gap: 8px;
   align-items: center;
 }
-.results li:hover { background: #f0f0f0; }
-.results img { width: 36px; height: 50px; object-fit: cover; border-radius: 2px; }
+
 .chosen { margin-top: 4px; font-size: 13px; color: #333; }
 .primary {
   display:block;

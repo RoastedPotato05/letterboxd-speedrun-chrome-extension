@@ -5,10 +5,6 @@ console.log("Content script running...")
 letterboxdData = {}
 
 
-
-
-
-
 chrome.runtime.onMessage.addListener((message) => {
     if (message.type === "refresh") {
         window.location.reload();

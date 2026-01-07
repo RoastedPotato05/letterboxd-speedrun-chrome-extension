@@ -9,6 +9,8 @@ const returnBtn = document.getElementById("return");
 const runDisplay = document.getElementById("run-display");
 const buttons = document.getElementById("buttons");
 const randomBtn = document.getElementById("random");
+const exitBtn = document.getElementById("exit");
+const exitDiv = document.getElementById("exit-div");
 
 let startTime;
 let updatedTime;
@@ -49,11 +51,12 @@ chrome.runtime.onMessage.addListener((message) => {           // listener for re
   uhhhhh = true;
   
   if (running) {
-    if (message.payload.url === goalInput.value) {
+    if (message.payload.url === goalInput.value) {    // win condition
       path.push(message.payload.item);
       stop();
       searchBlock.style.display = "none";
       buttons.style.display = "none";
+      exitDiv.style.display = "none";
       victory.style.display = "block";
       returnBtn.style.display = "block";
       playSound('sounds/fnaf.mp3');
@@ -132,24 +135,29 @@ randomBtn.addEventListener("click", async () => {         // listener for random
       startRun(goalInput.value);
     }
   });
+});
 
-  
-
-  
-
+exitBtn.addEventListener("click", async () => {         // listener for exiting the run
+  stop();
+  returnToMenu();
 });
 
 returnBtn.addEventListener("click", async () => {         // listener for restarting on return button click
+  returnToMenu();
+});
+
+function returnToMenu() {
   searchBlock.style.display = "block";
   buttons.style.display = "block";
   victory.style.display = "none";
   returnBtn.style.display = "none";
+  exitDiv.style.display = "none";
   runDisplay.style.display = "none";
   document.getElementById("minutes").textContent = "00";
   document.getElementById("seconds").textContent = "00";
   document.getElementById("milliseconds").textContent = "000";
   difference = 0;
-});
+}
 
 async function startRun(goalInputValue) {
   // get all recent letterboxd tabs
@@ -172,8 +180,9 @@ async function startRun(goalInputValue) {
   
 
 
-  // hide start run button
+  // hide start run button, display exit button
   buttons.style.display = "none";
+  exitDiv.style.display = "block";
 
   // start stopwatch
   start();
@@ -183,15 +192,41 @@ async function startRun(goalInputValue) {
   }
 }
 
+exitBtn.addEventListener("mouseover", () => {
+  exitBtn.style.backgroundColor = "#cc6600ff";
+});
 
-function startStop() {                      // stopwatch stuff thanks google ai
-  if (running) {
-    stop();
-  }
-  else {
-    start();
-  }
-}
+exitBtn.addEventListener("mouseout", () => {
+  exitBtn.style.backgroundColor = "#FF8000"; 
+});
+
+randomBtn.addEventListener("mouseover", () => {
+  randomBtn.style.backgroundColor = "#cc6600ff";
+});
+
+randomBtn.addEventListener("mouseout", () => {
+  randomBtn.style.backgroundColor = "#FF8000"; 
+});
+
+returnBtn.addEventListener("mouseover", () => {
+  returnBtn.style.backgroundColor = "#2b92c2ff";
+});
+
+returnBtn.addEventListener("mouseout", () => {
+  returnBtn.style.backgroundColor = "#40BCF4"; 
+});
+
+startRunBtn.addEventListener("mouseover", () => {
+  startRunBtn.style.backgroundColor = "#2b92c2ff";
+});
+
+startRunBtn.addEventListener("mouseout", () => {
+  startRunBtn.style.backgroundColor = "#40BCF4"; 
+});
+
+
+
+// stopwatch stuff thanks google ai
 
 function start() {
   // Start the stopwatch

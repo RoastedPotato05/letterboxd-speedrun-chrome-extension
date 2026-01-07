@@ -10,7 +10,7 @@ chrome.action.onClicked.addListener(() => {
 
 let cachedPopularHTML = null;
 
-async function fetchPopularPages(totalPages = 10) {
+async function fetchPopularPages(totalPages = 5) {
   let combinedHTML = '';
 
   for (let page = 1; page <= totalPages; page++) {
