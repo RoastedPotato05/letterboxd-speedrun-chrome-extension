@@ -7,11 +7,14 @@ const searchBlock = document.getElementById("search-block");
 const victory = document.getElementById("victory");
 const returnBtn = document.getElementById("return");
 const runDisplay = document.getElementById("run-display");
+const buttons = document.getElementById("buttons");
+const randomBtn = document.getElementById("random");
 
 let startTime;
 let updatedTime;
 let difference = 0;
 let tInterval;
+let movies = {};
 let running = false;
 let uhhhhh = false;
 let music = false;
@@ -31,7 +34,15 @@ function fixGoalInput() {
 
 
 chrome.runtime.onMessage.addListener((message) => {           // listener for receiving info from navigating letterboxd pages
-  
+
+  if (message.type === "popularMovies") {
+    console.log("Received popular movies:", message.payload);
+
+    movies = message.payload;
+  }
+  if (message.type !== "letterboxdData") {
+    return;
+  }
   if (uhhhhh && running) {
     playSound('sounds/vine_boom.mp3');      // whenever a run starts 2 messages are sent and
   }                                         // i dont want 2 vine booms so idk just dont play the first one
@@ -42,7 +53,7 @@ chrome.runtime.onMessage.addListener((message) => {           // listener for re
       path.push(message.payload.item);
       stop();
       searchBlock.style.display = "none";
-      startRunBtn.style.display = "none";
+      buttons.style.display = "none";
       victory.style.display = "block";
       returnBtn.style.display = "block";
       playSound('sounds/fnaf.mp3');
@@ -74,42 +85,63 @@ startRunBtn.addEventListener("click", async () => {         // listener for init
       fixGoalInput();
     }
     
-
-    // get all recent letterboxd tabs
-    const tabs = await chrome.tabs.query({ url: "https://letterboxd.com/*" });
-
-    tab = tabs[0]; // pick the first Letterboxd tab aka the most recent one aka the one the user is on
-
-    await chrome.scripting.executeScript({    // pretty much refreshes the content script otherwise it's 'out of date' after the
-      target: { tabId: tab.id },              // extension is refreshed and theres nothing to catch the message to refresh
-      files: ["content.js"]
-    });
-
-    // Send a message to the content script running in that tab
-    chrome.tabs.sendMessage(tab.id, { type: "refresh" });
-
-    // hide goal text and box, display "path"
-    searchBlock.style.display = "none";
-    runDisplay.style.display = "block";
-    runDisplay.querySelector("label[for='goal']").innerHTML = `<b><div style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 600;">Target URL: </div></b><div style="font-size: small; font-family: 'Graphik', sans-serif; font-weight: 400; color: #99AABB;">${goalInput.value}</div>`;
+    await startRun(goalInput.value);
     
+  }
+});
 
+randomBtn.addEventListener("click", async () => {         // listener for random goal button
+  // make a startRun function that basically does what the startRunBtn event listener does, passing in a goal url
+  // need functionality to go to the url of a random movie and display the url of the goal
+  console.log("Random button clicked");
 
-    // hide start run button
-    startRunBtn.style.display = "none";
+  const tabs = await chrome.tabs.query({ url: "https://letterboxd.com/*" });
 
-    // start stopwatch
-    start();
-    if (!music) {
-      backgroundMusic('sounds/balatro.mp3');
-      music = true
+  tab = tabs[0];
+
+  await chrome.scripting.executeScript({    
+    target: { tabId: tab.id },              
+    files: ["content.js"],
+  });
+
+  chrome.tabs.sendMessage(tab.id, { type: "randomPress" });
+
+  if (Object.keys(movies).length === 0) {
+    while (Object.keys(movies).length === 0) {
+      console.log("Waiting for movies to be populated...");
+      await new Promise(resolve => setTimeout(resolve, 500)); // wait 500ms
     }
   }
+
+
+  startIndex = Math.floor(Math.random() * Object.keys(movies).length);
+
+  // Send a message to the content script running in that tab
+  chrome.tabs.sendMessage(tab.id, { type: "navigateToUrl", payload: movies[startIndex].url});
+
+  goalIndex = Math.floor(Math.random() * Object.keys(movies).length);
+
+  while (goalIndex === startIndex) {
+    goalIndex = Math.floor(Math.random() * Object.keys(movies).length);
+  }
+
+  chrome.tabs.onUpdated.addListener(function listener(tabId, info) {
+    if (tabId === tab.id && info.status === "complete") {
+      chrome.tabs.onUpdated.removeListener(listener);
+      goalInput.value = movies[goalIndex].url;
+      startRun(goalInput.value);
+    }
+  });
+
+  
+
+  
+
 });
 
 returnBtn.addEventListener("click", async () => {         // listener for restarting on return button click
   searchBlock.style.display = "block";
-  startRunBtn.style.display = "block";
+  buttons.style.display = "block";
   victory.style.display = "none";
   returnBtn.style.display = "none";
   runDisplay.style.display = "none";
@@ -118,6 +150,38 @@ returnBtn.addEventListener("click", async () => {         // listener for restar
   document.getElementById("milliseconds").textContent = "000";
   difference = 0;
 });
+
+async function startRun(goalInputValue) {
+  // get all recent letterboxd tabs
+  const tabs = await chrome.tabs.query({ url: "https://letterboxd.com/*" });
+
+  tab = tabs[0]; // pick the first Letterboxd tab aka the most recent one aka the one the user is on
+
+  await chrome.scripting.executeScript({    // pretty much refreshes the content script otherwise it's 'out of date' after the
+    target: { tabId: tab.id },              // extension is refreshed and theres nothing to catch the message to refresh
+    files: ["content.js"]
+  });
+
+  // Send a message to the content script running in that tab
+  chrome.tabs.sendMessage(tab.id, { type: "refresh" });
+
+  // hide goal text and box, display "path"
+  searchBlock.style.display = "none";
+  runDisplay.style.display = "block";
+  runDisplay.querySelector("label[for='goal']").innerHTML = `<b><div style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 600;">Target URL: </div></b><div style="font-size: small; font-family: 'Graphik', sans-serif; font-weight: 400; color: #99AABB;">${goalInputValue}</div>`;
+  
+
+
+  // hide start run button
+  buttons.style.display = "none";
+
+  // start stopwatch
+  start();
+  if (!music) {
+    backgroundMusic('sounds/balatro.mp3');
+    music = true
+  }
+}
 
 
 function startStop() {                      // stopwatch stuff thanks google ai

@@ -11,7 +11,7 @@
     <h1 style="font-size: 42px; font-family: 'Graphik', sans-serif; font-weight: 600; letter-spacing: -1px;">Letterboxd Speedrun</h1>
 
     <div id="victory" style="display:none; font-size: large; font-family: 'Graphik', sans-serif; font-weight: 600;" >
-      🎉 Yippeeee! </br>
+      <br>🎉 Yippeeee! </br>
       You reached the goal webpage.</br><br>
     </div>
 
@@ -25,8 +25,19 @@
       <input id="search-goal" placeholder="Search goal (e.g. https://letterboxd.com/actor/zendaya/)" style="font-size: small; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #f8f8f8;" autocomplete="off" />
     </div>
 
-    <button id="start-run" class="primary" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 25px;">Start Run</button>
-    <button id="return" class="primary" style="display:none; font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 25px;">Return</button>
+    
+    
+
+    <div id="buttons" style="width: 104%;">
+      <div class="flex-child" style="width: 75%;">
+        <button id="start-run" class="primary" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 70px; background: #40BCF4;">Start Run</button>
+      </div>
+      <div class="flex-child" style="width: 82px;">
+        <button id="random" class="primary" style="height: 70px; background: #FF8000; position: relative; top: 8px; right: -8%"><img src="\images\dice.png" style="width: 50px; height: 50px; position: relative; top: 3px"></button>
+      </div>
+      
+    </div>
+    <button id="return" class="primary" style="display:none; font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 70px; background: #40BCF4;">Return</button>
     <div id="status" class="status"></div>
 
     <hr style="width:100%"/>
