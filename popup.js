@@ -12,6 +12,8 @@ const randomBtn = document.getElementById("random");
 const exitBtn = document.getElementById("exit");
 const exitDiv = document.getElementById("exit-div");
 
+let randomHTML;
+let randomStyle;
 let startTime;
 let updatedTime;
 let difference = 0;
@@ -96,7 +98,15 @@ startRunBtn.addEventListener("click", async () => {         // listener for init
 randomBtn.addEventListener("click", async () => {         // listener for random goal button
   // make a startRun function that basically does what the startRunBtn event listener does, passing in a goal url
   // need functionality to go to the url of a random movie and display the url of the goal
-  console.log("Random button clicked");
+  // console.log("Random button clicked");
+
+  randomHTML = randomBtn.innerHTML;
+  console.log("Random HTML:", randomHTML);
+  randomStyle = "height: 70px; background: #FF8000; position: relative; top: 8px; right: -8%";
+  console.log("Random Style:", randomStyle);
+
+  randomBtn.style = "font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 70px; background: #FF8000; position: relative; right: -8%; margin-top: 2px;";
+  randomBtn.innerHTML = '...';
 
   const tabs = await chrome.tabs.query({ url: "https://letterboxd.com/*" });
 
@@ -147,6 +157,8 @@ returnBtn.addEventListener("click", async () => {         // listener for restar
 });
 
 function returnToMenu() {
+  randomBtn.innerHTML = randomHTML;
+  randomBtn.style = randomStyle;
   searchBlock.style.display = "block";
   buttons.style.display = "block";
   victory.style.display = "none";

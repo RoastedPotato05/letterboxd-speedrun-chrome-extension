@@ -1,4 +1,5 @@
 chrome.action.onClicked.addListener(() => {
+  chrome.tabs.create({ url: "https://letterboxd.com/", active: true });
   chrome.windows.create({
     url: chrome.runtime.getURL("popup.html"),
     type: "popup",
@@ -7,10 +8,9 @@ chrome.action.onClicked.addListener(() => {
   });
 });
 
-
 let cachedPopularHTML = null;
 
-async function fetchPopularPages(totalPages = 5) {
+async function fetchPopularPages(totalPages = 10) {
   let combinedHTML = '';
 
   for (let page = 1; page <= totalPages; page++) {
@@ -45,3 +45,18 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return true; // async
   }
 });
+
+chrome.webNavigation.onCommitted.addListener(
+  async (details) => {
+    if (details.transitionQualifiers?.includes("forward_back")) {
+      //console.log("Back/forward navigation detected:", details.url);
+
+      const tabs = await chrome.tabs.query({ url: "https://letterboxd.com/*" });
+
+      tab = tabs[0];
+
+      chrome.tabs.sendMessage(tab.id, { type: "refresh" });
+    }
+  },
+  { url: [{ schemes: ["http", "https"] }] }
+);
