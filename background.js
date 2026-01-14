@@ -29,6 +29,18 @@ async function fetchPopularPages(totalPages = 10) {
   return combinedHTML;
 }
 
+async function requestTargetHTML(url) {
+  let html;
+  try {
+      const res = await fetch(url);
+      html = await res.text();
+  } catch (err) {
+    console.error(`Error fetching URL ${url}:`, err);
+    return null;
+  }
+  return html;
+}
+
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type === "requestPopularHTML") {
 
@@ -42,6 +54,15 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       .then(html => sendResponse({ html }))
       .catch(err => sendResponse({ error: err.message }));
 
+    return true; // async
+  }
+  if (msg.type === "requestTargetHTML") {
+    const url = msg.payload;
+    console.log("Fetching HTML for URL:", url);
+    requestTargetHTML(url)
+      .then(html => { sendResponse(html); })
+      .catch(err => { sendResponse(null);
+    });
     return true; // async
   }
 });

@@ -295,6 +295,19 @@ async function startRun(goalInputValue) {
   // get all recent letterboxd tabs
   const tabs = await chrome.tabs.query({ url: "https://letterboxd.com/*" });
 
+  console.log("Goal URL before fetching HTML:", goalInputValue);
+  goalInputValue = await chrome.runtime.sendMessage({ type: "requestTargetHTML", payload: goalInputValue });
+  console.log("Goal URL HTML", goalInputValue);
+
+  const doc = new DOMParser().parseFromString(
+    goalInputValue,
+    "text/html"
+  );
+
+  goalInputValue = doc.querySelector("meta[property='og:title']").content
+
+
+
   tab = tabs[0]; // pick the first Letterboxd tab aka the most recent one aka the one the user is on
 
   await chrome.scripting.executeScript({    // pretty much refreshes the content script otherwise it's 'out of date' after the
@@ -308,7 +321,7 @@ async function startRun(goalInputValue) {
   // hide goal text and box, display "path"
   searchBlock.style.display = "none";
   runDisplay.style.display = "block";
-  runDisplay.querySelector("label[for='goal']").innerHTML = `<b><div style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 600;">Target URL: </div></b><div style="font-size: small; font-family: 'Graphik', sans-serif; font-weight: 400; color: #99AABB;">${goalInputValue}</div>`;
+  runDisplay.querySelector("label[for='goal']").innerHTML = `<b><div style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 600;">Target: </div></b><div style="font-size: small; font-family: 'Graphik', sans-serif; font-weight: 400; color: #99AABB;">${goalInputValue}</div>`;
   
 
 
