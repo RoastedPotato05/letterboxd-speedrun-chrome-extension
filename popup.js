@@ -1,14 +1,23 @@
 // popup.js
 // const startInput = document.getElementById("search-start");
 const goalInput = document.getElementById("search-goal");
+const stopwatch = document.getElementById("stopwatch");
 const startRunBtn = document.getElementById("start-run");
-const status = document.getElementById("status");
 const searchBlock = document.getElementById("search-block");
 const victory = document.getElementById("victory");
 const returnBtn = document.getElementById("return");
+const saveBtn = document.getElementById("save");
+const statsReturnBtn = document.getElementById("stats-return");
+const clearStatsBtn = document.getElementById("clear-stats");
 const runDisplay = document.getElementById("run-display");
-const buttons = document.getElementById("buttons");
+const statsDisplay = document.getElementById("stats-display");
+const startBtns = document.getElementById("start-buttons");
+const endBtns = document.getElementById("end-buttons");
+const statsBtns = document.getElementById("stats-buttons");
 const randomBtn = document.getElementById("random");
+const dicePng = document.getElementById("dice-png");
+const randomText = document.getElementById("random-text");
+const statsBtn = document.getElementById("stats");
 const exitBtn = document.getElementById("exit");
 const exitDiv = document.getElementById("exit-div");
 
@@ -17,6 +26,7 @@ let randomStyle;
 let startTime;
 let updatedTime;
 let difference = 0;
+let data;
 let tInterval;
 let movies = {};
 let running = false;
@@ -57,10 +67,11 @@ chrome.runtime.onMessage.addListener((message) => {           // listener for re
       path.push(message.payload.item);
       stop();
       searchBlock.style.display = "none";
-      buttons.style.display = "none";
+      startBtns.style.display = "none";
       exitDiv.style.display = "none";
       victory.style.display = "block";
       returnBtn.style.display = "block";
+      endBtns.style.display = "block";
       playSound('sounds/fnaf.mp3');
       playSound('sounds/happy_wheels.mp3');
       
@@ -100,13 +111,8 @@ randomBtn.addEventListener("click", async () => {         // listener for random
   // need functionality to go to the url of a random movie and display the url of the goal
   // console.log("Random button clicked");
 
-  randomHTML = randomBtn.innerHTML;
-  console.log("Random HTML:", randomHTML);
-  randomStyle = "height: 70px; background: #FF8000; position: relative; top: 8px; right: -8%";
-  console.log("Random Style:", randomStyle);
-
-  randomBtn.style = "font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 70px; background: #FF8000; position: relative; right: -8%; margin-top: 2px;";
-  randomBtn.innerHTML = '...';
+  dicePng.style.display = "none";
+  randomText.style = "display: block; padding: 16px; font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 70px; position: relative; margin-top: 2px;";
 
   const tabs = await chrome.tabs.query({ url: "https://letterboxd.com/*" });
 
@@ -147,6 +153,80 @@ randomBtn.addEventListener("click", async () => {         // listener for random
   });
 });
 
+statsBtn.addEventListener("click", async () => {         // listener for stats button
+  searchBlock.style.display = "none";
+  startBtns.style.display = "none";
+  exitDiv.style.display = "none";
+  stopwatch.style.display = "none";
+
+  statsDisplay.style.display = "block";
+  statsBtns.style.display = "block";
+
+  await loadData();
+});
+
+async function loadData() {
+  document.getElementById("saved-runs-list").innerHTML = "";
+  data = await chrome.storage.local.get("paths");
+  if (!data.paths) {
+    data.paths = [];
+  }
+  for (let i = 0; i < data.paths.length; i++) {
+
+    const statsEntry = document.createElement("div");
+    const timeEntry = document.createElement("span");
+    const deleteBtn = document.createElement("button");
+    statsEntry.style.border = "3px solid #444C56";
+    statsEntry.style.padding = "6px 10px 12px";
+    statsEntry.style.marginBottom = "10px";
+    statsEntry.style.fontFamily = "'Graphik', sans-serif";
+    statsEntry.style.fontSize = "14px";
+    statsEntry.style.color = "#99AABB";
+
+    let minutes = Math.floor(data.paths[data.paths.length - 1 - i].time / 60000);
+    let seconds = Math.floor((data.paths[data.paths.length - 1 - i].time % 60000) / 1000);
+    let milliseconds = Math.floor(data.paths[data.paths.length - 1 - i].time % 1000);
+    // Format time to ensure leading zeros
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+    milliseconds = milliseconds < 100 ? milliseconds < 10 ? "00" + milliseconds : "0" + milliseconds : milliseconds;
+
+    timeEntry.innerHTML = `<b><span class="flex-child" style="font-size: 26px; width: 30%;">
+                                <span id="stats-minutes" style="color: #FF8000">${minutes}</span>:<span id="stats-seconds" style="color: #00E054">${seconds}</span>.<span id="stats-milliseconds" style="color: #40BCF4">${milliseconds}</span></span></b>
+                              <span class="flex-child" style="width: 30%;">
+                                <button class="primary-orange delete-run" style="width: 32px; position: relative; right: -240px;"
+                                run-index="${i}"><img src="images/trash.png" style="width: 24px; height: 24px; position: relative; right: 2.2px; top: 1px;"></button>
+                              </span>`;
+    statsEntry.appendChild(timeEntry);
+
+    const pathEntry = document.createElement("div");
+    pathEntry.textContent = `${data.paths[data.paths.length - 1 - i].path.join(" => ")}`;
+    statsEntry.appendChild(pathEntry);
+
+    document.getElementById("saved-runs-list").appendChild(statsEntry);
+  }
+}
+
+function deleteRun(index) {
+  data.paths.splice(data.paths.length - 1 - index, 1);
+  chrome.storage.local.set({ paths: data.paths });
+  console.log(data.paths);
+}
+
+
+document.addEventListener("click", async e => {
+  if (!e.target.classList.contains("delete-run")) return;
+
+  console.log("Delete button clicked");
+
+  const index = parseInt(e.target.getAttribute("run-index"), 10);
+  deleteRun(index);
+
+  console.log(`Deleted run at index: ${index}`);
+
+  await loadData();
+});
+
 exitBtn.addEventListener("click", async () => {         // listener for exiting the run
   stop();
   returnToMenu();
@@ -156,15 +236,55 @@ returnBtn.addEventListener("click", async () => {         // listener for restar
   returnToMenu();
 });
 
+statsReturnBtn.addEventListener("click", async () => {         // listener for returning from stats display
+  returnToMenu();
+});
+
+clearStatsBtn.addEventListener("click", async () => {         // listener for clearing stats
+  await chrome.storage.local.set({ paths: [] });
+  data.paths = [];
+  document.getElementById("saved-runs-list").innerHTML = "";
+});
+
+saveBtn.addEventListener("click", async () => {         // listener for saving run path
+  saveBtn.textContent = "Saved!";
+
+  try {
+    const { paths = [] } = await chrome.storage.local.get("paths");
+
+    const id = paths.length;
+
+    paths.push({ path, time:difference });
+
+    await chrome.storage.local.set({ paths });
+    // console.log(paths);
+  } catch (error) {
+    console.error("Error retrieving data:", error);
+  }
+
+  data.paths.push({ "path": path, "time": difference });
+
+  await chrome.storage.local.set({ paths: data.paths });
+  console.log(data.paths);
+  
+});
+
 function returnToMenu() {
-  randomBtn.innerHTML = randomHTML;
-  randomBtn.style = randomStyle;
+  // randomBtn.innerHTML = randomHTML;
+  // randomBtn.style = randomStyle;
+  
+  dicePng.style.display = "block";
   searchBlock.style.display = "block";
-  buttons.style.display = "block";
+  startBtns.style.display = "block";
+  stopwatch.style.display = "block";
+  randomText.style.display = "none";
   victory.style.display = "none";
   returnBtn.style.display = "none";
   exitDiv.style.display = "none";
   runDisplay.style.display = "none";
+  endBtns.style.display = "none";
+  statsDisplay.style.display = "none";
+  statsBtns.style.display = "none";
   document.getElementById("minutes").textContent = "00";
   document.getElementById("seconds").textContent = "00";
   document.getElementById("milliseconds").textContent = "000";
@@ -193,7 +313,7 @@ async function startRun(goalInputValue) {
 
 
   // hide start run button, display exit button
-  buttons.style.display = "none";
+  startBtns.style.display = "none";
   exitDiv.style.display = "block";
 
   // start stopwatch
@@ -203,39 +323,6 @@ async function startRun(goalInputValue) {
     music = true
   }
 }
-
-exitBtn.addEventListener("mouseover", () => {
-  exitBtn.style.backgroundColor = "#cc6600ff";
-});
-
-exitBtn.addEventListener("mouseout", () => {
-  exitBtn.style.backgroundColor = "#FF8000"; 
-});
-
-randomBtn.addEventListener("mouseover", () => {
-  randomBtn.style.backgroundColor = "#cc6600ff";
-});
-
-randomBtn.addEventListener("mouseout", () => {
-  randomBtn.style.backgroundColor = "#FF8000"; 
-});
-
-returnBtn.addEventListener("mouseover", () => {
-  returnBtn.style.backgroundColor = "#2b92c2ff";
-});
-
-returnBtn.addEventListener("mouseout", () => {
-  returnBtn.style.backgroundColor = "#40BCF4"; 
-});
-
-startRunBtn.addEventListener("mouseover", () => {
-  startRunBtn.style.backgroundColor = "#2b92c2ff";
-});
-
-startRunBtn.addEventListener("mouseout", () => {
-  startRunBtn.style.backgroundColor = "#40BCF4"; 
-});
-
 
 
 // stopwatch stuff thanks google ai
@@ -309,7 +396,7 @@ async function playSound(url, volume = 0.1) {
 }
 
 
-async function backgroundMusic(url, volume = 0.15) {
+async function backgroundMusic(url, volume = 0.10) {
   if (audioContext.state === 'suspended') {
     await audioContext.resume();
   }

@@ -25,30 +25,67 @@
       <input id="search-goal" placeholder="Search goal (e.g. https://letterboxd.com/actor/zendaya/)" style="font-size: small; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #f8f8f8;" autocomplete="off" />
     </div>
 
-    
+    <div id="stats-display" style="display: none; font-size: large; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #99AABB;">
+      <!-- <br><strong>Stats:</strong><br>
+      Total Runs: <span id="total-runs">0</span><br>
+      Successful Runs: <span id="successful-runs">0</span><br>
+      Success Rate: <span id="success-rate">0%</span><br>
+      Best Time: <span id="best-time">N/A</span><br>
+      Average Time: <span id="average-time">N/A</span><br> -->
+      SAVED RUNS: <br>
+      <div id="saved-runs-list">
+        <!-- Saved runs will be dynamically inserted here -->
+      </div>
+    </div>
     
 
-    <div id="buttons" style="width: 104%;">
-      <div class="flex-child" style="width: 75%;">
-        <button id="start-run" class="primary" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 70px; background: #40BCF4;">Start Run</button>
+    <div id="start-buttons" style="width: 104%;">
+      <div class="flex-child" style="width: 47%;">
+        <button id="start-run" class="primary-blue" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 70px;">Start Run</button>
+      </div>
+      <div class = "flex-child" style="width: 25%; padding: 0px 8px">
+        <button id="stats" class="primary-green" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 70px;">Stats</button>
       </div>
       <div class="flex-child" style="width: 82px;">
-        <button id="random" class="primary" style="height: 70px; background: #FF8000; position: relative; top: 8px; right: -8%"><img src="\images\dice.png" style="width: 50px; height: 50px; position: relative; top: 3px"></button>
+        <button id="random" class="primary-orange" style="height: 70px; position: relative; top: 8px;">
+          <span id ="dice-png"><img  src="\images\dice.png" style="width: 50px; height: 50px; position: relative; top: 0px"></span>
+          <span id="random-text" style="display: none;">...</span>
+        </button>
       </div>
     </div>
 
-    <div><button id="return" class="primary" style="display:none; font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 60px; background: #40BCF4;">Return</button></div>
-    <div id ="exit-div" style="display:none;"><br><br><button class="primary" id="exit" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 60px; background: #FF8000;">Exit</button></div>
+    <div id="end-buttons" style="width:104%; display: none;">
+      <div class="flex-child" style="width: 47%;">
+        <button id="return" class="primary-blue" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 60px;">Return</button>
+      </div>
+      <div class="flex-child" style="width: 47%;">
+        <button id="save" type="button" class="primary-green" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; position: relative; right: -4%; height: 60px;">Save</button>
+      </div>
+    </div>
+
+    
+
+    
+
+    <div id ="exit-div" style="display:none;"><br><br><button class="primary-orange" id="exit" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 60px;">Exit</button></div>
     
     <div id="status" class="status"></div>
 
     <hr style="width:100%"/>
 
-    <footer style="background: #161c22; height: 90px">
-      <div class="stopwatch-container" style="font-size: large; background: #161c22;">
+    <footer style="background: #161c22; height: 90px" id="page-footer">
+      <div class="stopwatch-container" id="stopwatch" style="font-size: large; background: #161c22;">
         <strong><div id="display" style="font-family: 'Graphik', sans-serif; font-size: 76px; position: relative; left: 20px; top: -12px">
           <span id="minutes" style="color: #FF8000">00</span>:<span id="seconds" style="color: #00E054">00</span>.<span id="milliseconds" style="color: #40BCF4">000</span>
         </div></strong>
+      </div>
+      <div id="stats-buttons" style="width:104%; display: none; padding: 0px 10px;">
+        <div class="flex-child" style="width: 45%;">
+          <button id="stats-return" class="primary-blue" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; position: relative; top: 12px; height: 80px;">Return</button>
+        </div>
+        <div class="flex-child" style="width: 45%;">
+          <button id="clear-stats" class="primary-orange" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; position: relative; top: 12px; right: -4%; height: 80px;">Clear Stats</button>
+        </div>
       </div>
     </footer>
   </div>
