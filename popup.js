@@ -1,5 +1,5 @@
 // popup.js
-// const startInput = document.getElementById("search-start");
+const startInput = document.getElementById("search-start");
 const goalInput = document.getElementById("search-goal");
 const stopwatch = document.getElementById("stopwatch");
 const startRunBtn = document.getElementById("start-run");
@@ -35,14 +35,15 @@ let music = false;
 let path = [];
 const display = document.getElementById("display");
 
-function fixGoalInput() {
-  console.log(goalInput.value);
-  inputArray = goalInput.value.split("/");
+function fixInput(input) {
+  console.log(input);
+  inputArray = input.split("/");
   console.log(inputArray);
   inputArray.pop();
   inputArray.pop();
-  goalInput.value = inputArray.join("/") + "/";
-  console.log(goalInput.value);
+  input = inputArray.join("/") + "/";
+  console.log(input);
+  return input;
 }
 
 
@@ -96,12 +97,15 @@ chrome.runtime.onMessage.addListener((message) => {           // listener for re
 
 
 startRunBtn.addEventListener("click", async () => {         // listener for initializing the run on button click
-  if (goalInput.value) {
+  if (goalInput.value && startInput.value) {
     if (goalInput.value.split("/").length > 6) {
-      fixGoalInput();
+      goalInput.value = fixInput(goalInput.value);
+    }
+    if (startInput.value.split("/").length > 6) {
+      startInput.value = fixInput(startInput.value);
     }
     
-    await startRun(goalInput.value);
+    await startRun(goalInput.value, startInput.value);
     
   }
 });
@@ -147,8 +151,9 @@ randomBtn.addEventListener("click", async () => {         // listener for random
   chrome.tabs.onUpdated.addListener(function listener(tabId, info) {
     if (tabId === tab.id && info.status === "complete") {
       chrome.tabs.onUpdated.removeListener(listener);
+      startInput.value = movies[startIndex].url;
       goalInput.value = movies[goalIndex].url;
-      startRun(goalInput.value);
+      startRun(goalInput.value, startInput.value);
     }
   });
 });
@@ -291,24 +296,44 @@ function returnToMenu() {
   difference = 0;
 }
 
-async function startRun(goalInputValue) {
-  // get all recent letterboxd tabs
-  const tabs = await chrome.tabs.query({ url: "https://letterboxd.com/*" });
-
-  console.log("Goal URL before fetching HTML:", goalInputValue);
-  goalInputValue = await chrome.runtime.sendMessage({ type: "requestTargetHTML", payload: goalInputValue });
-  console.log("Goal URL HTML", goalInputValue);
-
+function getMovieOrCrewName(input) {
   const doc = new DOMParser().parseFromString(
-    goalInputValue,
+    input,
     "text/html"
   );
 
-  goalInputValue = doc.querySelector("meta[property='og:title']").content
+  if (input.match("letterboxd.com/film")) {
+      return (doc.querySelector("meta[property='og:title']").content);
+  }
+  else {
+      let h1 = doc.querySelector("div[class='contextual-title']");
+      let span = h1.querySelector("span[class='context']");
+      return h1.textContent.replace(span.textContent, "").trim();
+  }
+}
 
+async function startRun(goalInputValue, startInputValue) {
+  let uhhhhhhh = false;
 
+  // get all recent letterboxd tabs
+  const tabs = await chrome.tabs.query({ url: "https://letterboxd.com/*" });
 
+  
   tab = tabs[0]; // pick the first Letterboxd tab aka the most recent one aka the one the user is on
+
+  if (startInputValue != tabs[0].url) {
+    uhhhhhhh = true;
+    chrome.tabs.sendMessage(tab.id, { type: "navigateToUrl", payload: startInputValue});
+  }
+  
+
+  // console.log("Goal URL before fetching HTML:", goalInputValue);
+  goalInputValue = await chrome.runtime.sendMessage({ type: "requestTargetHTML", payload: goalInputValue });
+  // console.log("Goal URL HTML", goalInputValue);
+
+  goalName = getMovieOrCrewName(goalInputValue);
+
+
 
   await chrome.scripting.executeScript({    // pretty much refreshes the content script otherwise it's 'out of date' after the
     target: { tabId: tab.id },              // extension is refreshed and theres nothing to catch the message to refresh
@@ -316,12 +341,13 @@ async function startRun(goalInputValue) {
   });
 
   // Send a message to the content script running in that tab
-  chrome.tabs.sendMessage(tab.id, { type: "refresh" });
-
+  if (!uhhhhhhh) {
+    chrome.tabs.sendMessage(tab.id, { type: "refresh" });
+  }
   // hide goal text and box, display "path"
   searchBlock.style.display = "none";
   runDisplay.style.display = "block";
-  runDisplay.querySelector("label[for='goal']").innerHTML = `<b><div style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 600;">Target: </div></b><div style="font-size: small; font-family: 'Graphik', sans-serif; font-weight: 400; color: #99AABB;">${goalInputValue}</div>`;
+  runDisplay.querySelector("label[for='goal']").innerHTML = `<b><br><div style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 600;">Target: </div></b><div style="font-size: small; font-family: 'Graphik', sans-serif; font-weight: 400; color: #99AABB;">${goalName}</div>`;
   
 
 

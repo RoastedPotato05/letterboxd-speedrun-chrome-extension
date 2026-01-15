@@ -4,7 +4,7 @@ chrome.action.onClicked.addListener(() => {
     url: chrome.runtime.getURL("popup.html"),
     type: "popup",
     width: 480,
-    height: 480
+    height: 500
   });
 });
 
@@ -76,7 +76,13 @@ chrome.webNavigation.onCommitted.addListener(
 
       tab = tabs[0];
 
-      chrome.tabs.sendMessage(tab.id, { type: "refresh" });
+      // chrome.tabs.sendMessage(tab.id, { type: "refresh" });
+      await chrome.scripting.executeScript({    
+        target: { tabId: tab.id },              
+        files: ["content.js"],
+      });
+
+
     }
   },
   { url: [{ schemes: ["http", "https"] }] }

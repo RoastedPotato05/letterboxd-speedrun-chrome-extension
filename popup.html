@@ -20,9 +20,16 @@
       <label for="path"></label>
     </div><br><br>
 
-    <div class="search-block" id="search-block">
-      <label style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #99AABB;">GOAL</label>
-      <input id="search-goal" placeholder="Search goal (e.g. https://letterboxd.com/actor/zendaya/)" style="font-size: small; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #f8f8f8;" autocomplete="off" />
+    <div id="search-block">
+      <div class="search-block" id="start-input-block">
+        <label style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #99AABB;">START</label>
+        <input id="search-start" placeholder="Starting URL (e.g. https://letterboxd.com/film/tenet/)" style="font-size: 12px; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #f8f8f8;" autocomplete="off" />
+      </div>
+
+      <div class="search-block" id="goal-input-block">
+        <label style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #99AABB;">GOAL</label>
+        <input id="search-goal" placeholder="Goal URL (e.g. https://letterboxd.com/actor/zendaya/)" style="font-size: 12px; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #f8f8f8;" autocomplete="off" />
+      </div>
     </div>
 
     <div id="stats-display" style="display: none; font-size: large; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #99AABB;">
