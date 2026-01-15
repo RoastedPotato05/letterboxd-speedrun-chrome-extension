@@ -1,6 +1,8 @@
 // popup.js
 const startInput = document.getElementById("search-start");
 const goalInput = document.getElementById("search-goal");
+const randomStart = document.getElementById("random-start");
+const randomGoal = document.getElementById("random-goal");
 const stopwatch = document.getElementById("stopwatch");
 const startRunBtn = document.getElementById("start-run");
 const searchBlock = document.getElementById("search-block");
@@ -157,6 +159,37 @@ randomBtn.addEventListener("click", async () => {         // listener for random
     }
   });
 });
+
+randomStart.addEventListener("click", async () => {
+  //console.log("random start button clicked");
+  startInput.value = await fillRandom();
+});
+
+randomGoal.addEventListener("click", async () => {
+  goalInput.value = await fillRandom();
+});
+
+async function fillRandom() {
+  if (Object.keys(movies).length === 0) {
+    const tabs = await chrome.tabs.query({ url: "https://letterboxd.com/*" });
+
+    tab = tabs[0];
+
+    await chrome.scripting.executeScript({    
+      target: { tabId: tab.id },              
+      files: ["content.js"],
+    });
+
+    chrome.tabs.sendMessage(tab.id, { type: "randomPress" });
+
+    while (Object.keys(movies).length === 0) {
+      console.log("Waiting for movies to be populated...");
+      await new Promise(resolve => setTimeout(resolve, 500)); // wait 500ms
+    }
+  }
+
+  return movies[Math.floor(Math.random() * Object.keys(movies).length)].url;
+}
 
 statsBtn.addEventListener("click", async () => {         // listener for stats button
   searchBlock.style.display = "none";

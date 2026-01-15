@@ -20,15 +20,21 @@
       <label for="path"></label>
     </div><br><br>
 
-    <div id="search-block">
+    <div id="search-block" style="width: 104%">
       <div class="search-block" id="start-input-block">
         <label style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #99AABB;">START</label>
-        <input id="search-start" placeholder="Starting URL (e.g. https://letterboxd.com/film/tenet/)" style="font-size: 12px; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #f8f8f8;" autocomplete="off" />
+        <input class="flex-child" id="search-start" placeholder="Starting URL (e.g. https://letterboxd.com/film/tenet/)" value="" style="width: 86%; height: 28px; font-size: 12px; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #f8f8f8;" autocomplete="off" />
+        <button id="random-start" class="flex-child primary-orange" style="width: 8%; height: 28px; position: relative; top: 3px; left: 5px;">
+          <span id ="dice-png"><img  src="\images\dice.png" style="width: 20px; height: 20px; position: relative; top: 1px; right: 1%;"></span>
+        </button>
       </div>
 
       <div class="search-block" id="goal-input-block">
         <label style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #99AABB;">GOAL</label>
-        <input id="search-goal" placeholder="Goal URL (e.g. https://letterboxd.com/actor/zendaya/)" style="font-size: 12px; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #f8f8f8;" autocomplete="off" />
+        <input class="flex-child" id="search-goal" placeholder="Goal URL (e.g. https://letterboxd.com/actor/zendaya/)" value="" style="width: 86%; height: 28px; font-size: 12px; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #f8f8f8;" autocomplete="off" />
+        <button id="random-goal" class="flex-child primary-orange" style="width: 8%; height: 28px; position: relative; top: 2px; left: 5px;">
+          <span id ="dice-png"><img  src="\images\dice.png" style="width: 20px; height: 20px; position: relative; top: 2px; right: 1%;"></span>
+        </button>
       </div>
     </div>
 
@@ -44,7 +50,7 @@
         <!-- Saved runs will be dynamically inserted here -->
       </div>
     </div>
-    
+    <br>
 
     <div id="start-buttons" style="width: 104%;">
       <div class="flex-child" style="width: 47%;">
