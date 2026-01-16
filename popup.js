@@ -118,7 +118,7 @@ randomBtn.addEventListener("click", async () => {         // listener for random
   // console.log("Random button clicked");
 
   dicePng.style.display = "none";
-  randomText.style = "display: block; padding: 16px; font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 70px; position: relative; margin-top: 2px;";
+  randomText.style = "display: block; padding: 16px; font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 70px; position: relative; margin-top: 2px; bottom: 7px;";
 
   const tabs = await chrome.tabs.query({ url: "https://letterboxd.com/*" });
 

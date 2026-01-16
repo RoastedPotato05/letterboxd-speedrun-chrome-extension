@@ -11,14 +11,11 @@
 
 4. Select the folder that you unpacked the code into
 
-5. Open a tab to letterboxd.com and run the extension, navigate to whatever page you want to start from
+5. Run the extension
 
-6. In another tab or window find your target letterboxd page, can be a movie, actor/actress, director etc.
-
-7. Copy/paste the URL of the target page in the 'GOAL' input box, and the timer will start
-
-8. Navigate however you'd like to the target page only using redirects on the letterboxd page, your path will automatically be listed
+6. Find your starting and goal letterboxd page url, can be a movie, actor/actress, director etc., or use the small randomizer buttons to automatically fill in a random movie url  
   
+  (Large randomizer button will automatically start a run w/ a random start and goal movie)
 
-## Note:
-  Pretty much any redirect should work from a movie or cast's page, as a rule I usually limit myself to only cast/crew for movies, and no MCU because everyone's in the MCU 
+8. Navigate however you'd like to the target page only using redirects on the letterboxd page (cast, director, crew, etc.), your path will automatically be listed
+  
