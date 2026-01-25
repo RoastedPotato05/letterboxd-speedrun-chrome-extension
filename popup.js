@@ -283,10 +283,10 @@ statsBtn.addEventListener("click", async () => {         // listener for stats b
 
   document.getElementById("winsNum").textContent = data.wins || 0;
   document.getElementById("winStreakNum").textContent = data.winStreak || 0;
-  document.getElementById("shortestPathLengthNum").textContent = data.shortestPathLength === Infinity ? "N/A" : data.shortestPathLength;
+  document.getElementById("shortestPathLengthNum").textContent = data.shortestPathLength || "N/A";
   document.getElementById("avgPathLengthNum").textContent = data.avgPathLength ? data.avgPathLength.toFixed(2) : "N/A";
-  document.getElementById("longestPathLengthNum").textContent = data.longestPathLength || 0;
-  document.getElementById("shortestTimeNum").textContent = data.shortestTime === Infinity ? "N/A" : (data.shortestTime / 1000).toFixed(2) + "s";
+  document.getElementById("longestPathLengthNum").textContent = data.longestPathLength || "N/A";
+  document.getElementById("shortestTimeNum").textContent = data.shortestTime ? (data.shortestTime / 1000).toFixed(2) + "s" : "N/A";
   document.getElementById("avgTimeNum").textContent = data.avgTime ? (data.avgTime / 1000).toFixed(2) + "s" : "N/A";
   document.getElementById("longestTimeNum").textContent = data.longestTime ? (data.longestTime / 1000).toFixed(2) + "s" : "N/A";
   console.log("wins: ", data.wins);
@@ -485,6 +485,15 @@ statsReturnBtn.addEventListener("click", async () => {         // listener for r
 
 clearStatsBtn.addEventListener("click", async () => {         // listener for clearing stats
   await chrome.storage.local.clear();
+
+  document.getElementById("winsNum").textContent = 0;
+  document.getElementById("winStreakNum").textContent = 0;
+  document.getElementById("shortestPathLengthNum").textContent = "N/A";
+  document.getElementById("avgPathLengthNum").textContent = "N/A";
+  document.getElementById("longestPathLengthNum").textContent = "N/A";
+  document.getElementById("shortestTimeNum").textContent = "N/A";
+  document.getElementById("avgTimeNum").textContent = "N/A";
+  document.getElementById("longestTimeNum").textContent = "N/A";
 
   Array.from(document.getElementsByClassName("bar-num")).forEach(element => {
     element.innerHTML = "0";
