@@ -13,6 +13,9 @@ const statsReturnBtn = document.getElementById("stats-return");
 const clearStatsBtn = document.getElementById("clear-stats");
 const runDisplay = document.getElementById("run-display");
 const statsDisplay = document.getElementById("stats-display");
+const statsBarsNums = document.getElementById("stats-bars-nums");
+const statsBars = document.getElementById("stats-bars");
+const statsBarsItems = document.getElementById("stats-bars-items");
 const startBtns = document.getElementById("start-buttons");
 const endBtns = document.getElementById("end-buttons");
 const statsBtns = document.getElementById("stats-buttons");
@@ -50,7 +53,7 @@ function fixInput(input) {
 
 
 
-chrome.runtime.onMessage.addListener((message) => {           // listener for receiving info from navigating letterboxd pages
+chrome.runtime.onMessage.addListener(async (message) => {           // listener for receiving info from navigating letterboxd pages
 
   if (message.type === "popularMovies") {
     console.log("Received popular movies:", message.payload);
@@ -68,7 +71,21 @@ chrome.runtime.onMessage.addListener((message) => {           // listener for re
   if (running) {
     if (message.payload.url === goalInput.value) {    // win condition
       path.push(message.payload.item);
-      stop();
+
+      await stop();
+      let minutes = Math.floor(difference / 60000);
+      let seconds = Math.floor((difference % 60000) / 1000);
+      let milliseconds = Math.floor(difference % 1000);
+      // Format time to ensure leading zeros
+      minutes = minutes < 10 ? "0" + minutes : minutes;
+      seconds = seconds < 10 ? "0" + seconds : seconds;
+      milliseconds = milliseconds < 100 ? milliseconds < 10 ? "00" + milliseconds : "0" + milliseconds : milliseconds;
+      
+      document.getElementById("minutes").textContent = minutes;
+      document.getElementById("seconds").textContent = seconds;
+      document.getElementById("milliseconds").textContent = milliseconds;
+
+
       searchBlock.style.display = "none";
       startBtns.style.display = "none";
       exitDiv.style.display = "none";
@@ -77,7 +94,69 @@ chrome.runtime.onMessage.addListener((message) => {           // listener for re
       endBtns.style.display = "block";
       playSound('sounds/fnaf.mp3');
       playSound('sounds/happy_wheels.mp3');
+
+
+      let { wins = 0 } = await chrome.storage.local.get("wins");          // stats calculations
+      await wins++; 
+      await chrome.storage.local.set( {wins} );
+
+
+      let { winStreak = 0 } = await chrome.storage.local.get("winStreak");
+      await winStreak++;
+      await chrome.storage.local.set( {winStreak} );
+
+
+      let { shortestPathLength = Infinity } = await chrome.storage.local.get("shortestPathLength");
+      if (path.length < shortestPathLength) {
+        shortestPathLength = path.length;
+        await chrome.storage.local.set( {shortestPathLength} );
+      }
+
+
+      let { avgPathLength = 0 } = await chrome.storage.local.get("avgPathLength");
+      avgPathLength = ((avgPathLength * (wins - 1)) + path.length) / wins;
+      await chrome.storage.local.set( {avgPathLength} );
+
+
+      let { longestPathLength = 0 } = await chrome.storage.local.get("longestPathLength");
+      if (path.length > longestPathLength) {
+        longestPathLength = path.length;
+        await chrome.storage.local.set( {longestPathLength} );
+      }
       
+
+      let { shortestTime = Infinity } = await chrome.storage.local.get("shortestTime");
+      if (difference < shortestTime) {
+        shortestTime = difference;
+        await chrome.storage.local.set( {shortestTime} );
+      }
+      
+
+      let { avgTime = 0 } = await chrome.storage.local.get("avgTime");
+      avgTime = ((avgTime * (wins - 1)) + difference) / wins;
+      await chrome.storage.local.set( {avgTime} );
+
+
+      let { longestTime = 0 } = await chrome.storage.local.get("longestTime");
+      if (difference > longestTime) {
+        longestTime = difference;
+        await chrome.storage.local.set( {longestTime} );
+      }
+
+      let { mostVisited = {} } = await chrome.storage.local.get("mostVisited");
+      path.forEach(item => {
+        if (mostVisited[item]) {
+          //console.log("revisited page");
+          mostVisited[item]++;
+        }
+        else {
+          mostVisited[item] = 1;
+        }
+        
+        console.log(mostVisited);
+      });
+      await chrome.storage.local.set( {mostVisited} );
+
     }
     else {
       item = message.payload.item;
@@ -200,9 +279,133 @@ statsBtn.addEventListener("click", async () => {         // listener for stats b
   statsDisplay.style.display = "block";
   statsBtns.style.display = "block";
 
+  data = await chrome.storage.local.get(null);
+
+  document.getElementById("winsNum").textContent = data.wins || 0;
+  document.getElementById("winStreakNum").textContent = data.winStreak || 0;
+  document.getElementById("shortestPathLengthNum").textContent = data.shortestPathLength === Infinity ? "N/A" : data.shortestPathLength;
+  document.getElementById("avgPathLengthNum").textContent = data.avgPathLength ? data.avgPathLength.toFixed(2) : "N/A";
+  document.getElementById("longestPathLengthNum").textContent = data.longestPathLength || 0;
+  document.getElementById("shortestTimeNum").textContent = data.shortestTime === Infinity ? "N/A" : (data.shortestTime / 1000).toFixed(2) + "s";
+  document.getElementById("avgTimeNum").textContent = data.avgTime ? (data.avgTime / 1000).toFixed(2) + "s" : "N/A";
+  document.getElementById("longestTimeNum").textContent = data.longestTime ? (data.longestTime / 1000).toFixed(2) + "s" : "N/A";
+  console.log("wins: ", data.wins);
+  console.log("win streak: ", data.winStreak);
+  console.log("shortest length: ", data.shortestPathLength);
+  console.log("average length: ", data.avgPathLength);
+  console.log("longest length:", data.longestPathLength);
+  console.log("shortest time:", data.shortestTime);
+  console.log("average time:", data.avgTime);
+  console.log("longest time:", data.longestTime);
+  console.log("most visited: \n", data.mostVisited);
+  // finish for times and then probably make displays for those and then work on graph
+
+  
+
+  // dynamically create side by side vertical green bars for top 10 most visited pages with the counts on top, or substituting for 0 and "---" if undefined data
+  statsBars.innerHTML = ""; // Clear previous bars
+  statsBarsNums.innerHTML = "";
+  statsBarsItems.innerHTML = "";
+
+  let entries = [];
+  
+
+  if (data.mostVisited) {
+    entries = Object.entries(data.mostVisited);
+    entries.sort(([, a], [, b]) => b - a);
+  }
+
+  let item;
+  let num;
+  let highest = 0;
+
+  for (let i = 0; i < 10; i++) {
+    if (entries[i]) {
+      item = entries[i][0];
+      num = entries[i][1];
+      highest = entries[0][1];
+    }
+    else {
+      item = "---";
+      num = 0;
+    }
+    
+    //console.log(item);
+
+    const barNum = document.createElement("div");
+    barNum.className = "flex-child bar-num";
+    barNum.style.width = "20px";
+    barNum.style.marginRight = "16px";
+    barNum.style.textAlign = "center";
+    barNum.style.position = "relative";
+    barNum.style.bottom = "-10px";
+    barNum.innerText = num;
+
+    const bar = document.createElement("div");
+    bar.className = "flex-child bar";
+    bar.style.width = "20px";
+    if (num === 0) {
+      bar.style.height = "2%";
+    }
+    else {
+      bar.style.height = `${num / highest * 100}%`;
+    }
+    bar.style.marginRight = "16px";
+    bar.style.textAlign = "center";
+    bar.style.backgroundColor = "#00E054";
+
+    const barItem = document.createElement("div");
+    barItem.className = "flex-child rotate bar-item";
+    barItem.style.width = "20px";
+    barItem.style.marginRight = "16px";
+    barItem.style.textAlign = "left";
+    barItem.style.position = "relative";
+    barItem.style.top = "-20px";
+    barItem.innerText = item;
+
+    
+
+
+
+    statsBarsNums.appendChild(barNum);
+    statsBars.appendChild(bar);
+    statsBarsItems.appendChild(barItem);
+  }
+
+  
+
+  // const { paths = [] } = await chrome.storage.local.get("paths");
+  // let wins = 67
+  // await chrome.storage.local.set({ wins });
+  // console.log(await chrome.storage.local.get("wins"));
+  
+  await labelSpacing();
   await loadData();
 });
 
+function labelSpacing() {
+  labels = document.getElementById("stats-bars-items").children;
+  console.log(labels)
+  const data = Array.from(labels).map(element => element.innerText);
+  console.log(data);
+  const items = data.map(item => item.toString());
+
+  const longestLength = Math.max(
+    ...items.map(str => str.length)
+  );
+
+  console.log("Longest label length:", longestLength);
+
+  const charWidth = 7.5;          // px, for ~12pt font
+  const angleRad = 60 * Math.PI / 180;
+
+  const paddingBottom =
+    Math.ceil(longestLength * charWidth * Math.sin(angleRad)) - 20;
+
+  statsBarsItems.style.paddingBottom = `${paddingBottom}px`;
+}
+
+      
 async function loadData() {
   document.getElementById("saved-runs-list").innerHTML = "";
   data = await chrome.storage.local.get("paths");
@@ -213,10 +416,9 @@ async function loadData() {
 
     const statsEntry = document.createElement("div");
     const timeEntry = document.createElement("span");
-    const deleteBtn = document.createElement("button");
     statsEntry.style.border = "3px solid #444C56";
     statsEntry.style.padding = "6px 10px 12px";
-    statsEntry.style.marginBottom = "10px";
+    statsEntry.style.marginTop = "10px";
     statsEntry.style.fontFamily = "'Graphik', sans-serif";
     statsEntry.style.fontSize = "14px";
     statsEntry.style.color = "#99AABB";
@@ -267,6 +469,9 @@ document.addEventListener("click", async e => {
 
 exitBtn.addEventListener("click", async () => {         // listener for exiting the run
   stop();
+  // let { winStreak = 0 } = await chrome.storage.local.get("win-streak");
+  let winStreak = 0;
+  await chrome.storage.local.set( {winStreak} );
   returnToMenu();
 });
 
@@ -279,8 +484,19 @@ statsReturnBtn.addEventListener("click", async () => {         // listener for r
 });
 
 clearStatsBtn.addEventListener("click", async () => {         // listener for clearing stats
-  await chrome.storage.local.set({ paths: [] });
-  data.paths = [];
+  await chrome.storage.local.clear();
+
+  Array.from(document.getElementsByClassName("bar-num")).forEach(element => {
+    element.innerHTML = "0";
+  });
+  Array.from(document.getElementsByClassName("bar")).forEach(element => {
+    element.style.height = "2%";
+  });
+  Array.from(document.getElementsByClassName("bar-item")).forEach(element => {
+    element.innerHTML = "---";
+  });
+  labelSpacing();
+
   document.getElementById("saved-runs-list").innerHTML = "";
 });
 
@@ -299,11 +515,6 @@ saveBtn.addEventListener("click", async () => {         // listener for saving r
   } catch (error) {
     console.error("Error retrieving data:", error);
   }
-
-  data.paths.push({ "path": path, "time": difference });
-
-  await chrome.storage.local.set({ paths: data.paths });
-  console.log(data.paths);
   
 });
 
@@ -323,10 +534,12 @@ function returnToMenu() {
   endBtns.style.display = "none";
   statsDisplay.style.display = "none";
   statsBtns.style.display = "none";
+  saveBtn.textContent = "Save";
   document.getElementById("minutes").textContent = "00";
   document.getElementById("seconds").textContent = "00";
   document.getElementById("milliseconds").textContent = "000";
   difference = 0;
+  path = [];
 }
 
 function getMovieOrCrewName(input) {
@@ -347,6 +560,7 @@ function getMovieOrCrewName(input) {
 
 async function startRun(goalInputValue, startInputValue) {
   let uhhhhhhh = false;
+  path = [];
 
   // get all recent letterboxd tabs
   const tabs = await chrome.tabs.query({ url: "https://letterboxd.com/*" });
@@ -399,14 +613,14 @@ async function startRun(goalInputValue, startInputValue) {
 
 // stopwatch stuff thanks google ai
 
-function start() {
+async function start() {
   // Start the stopwatch
   startTime = Date.now() - difference;
   tInterval = setInterval(updateDisplay, 10); // Update every 10ms for precision
   running = true;
 }
 
-function stop() {
+async function stop() {
   // Stop the stopwatch
   clearInterval(tInterval);
   running = false;
