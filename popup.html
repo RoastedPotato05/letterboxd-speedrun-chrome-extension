@@ -10,14 +10,17 @@
   <div class="container">
     <h1 style="font-size: 42px; font-family: 'Graphik', sans-serif; font-weight: 600; letter-spacing: -1px;">Letterboxd Speedrun</h1>
 
-    <div id="victory" style="display:none; font-size: large; font-family: 'Graphik', sans-serif; font-weight: 600;" >
-      <br>🎉 Yippeeee! </br>
-      You reached the goal webpage.</br><br>
-    </div>
+    <div id="run-display" style="display: none; font-size: large; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #99AABB;">
+      <br><label style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #99AABB;">TARGET</label>
+      <div id="target">
+        
+      </div>
+      <label style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #99AABB;">PATH</label>
+      <div id="path" style="border: 3px solid #444C56; width: 392px; padding: 10px; margin-top: 10px; font-size: 16px;">
 
-    <div id="run-display" style="display: none;">
-      <label for="goal"></label>
-      <label for="path"></label>
+      </div>
+      <!-- <label for="goal"></label> -->
+      <!-- <label for="path"></label> -->
     </div><br><br>
 
     <div id="search-block" style="width: 104%">
@@ -39,7 +42,7 @@
     </div>
 
     <div id="stats-display" style="display: none; font-size: large; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #99AABB;">
-      STATISTICS:
+      STATISTICS
       <div style="width: 104%">
         <span id="wins" class="flex-child" style="border: 3px solid #444C56; width: 40%; margin-top: 10px; padding: 10px; font-size: 20px;">WINS: <span id="winsNum" style="color: #00E054">0</span></span>
         <span id="win-streak" class="flex-child" style="border: 3px solid #444C56; width: 43%; margin-top: 10px; padding: 10px; font-size: 20px;">WIN STREAK: <span id="winStreakNum" style="color: #FF8000">0</span></span>
@@ -70,7 +73,7 @@
       </div>
       
       
-      SAVED RUNS: <br>
+      SAVED RUNS <br>
       <div id="saved-runs-list">
         <!-- Saved runs will be dynamically inserted here -->
       </div>

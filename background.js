@@ -58,13 +58,17 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
   if (msg.type === "requestTargetHTML") {
     const url = msg.payload;
-    console.log("Fetching HTML for URL:", url);
+    //console.log("Fetching HTML for URL:", url);
+
+    const isFilmPage = url.includes("letterboxd.com/film");
+
     requestTargetHTML(url)
-      .then(html => { sendResponse(html); })
-      .catch(err => { sendResponse(null);
+      .then(html => { sendResponse({html, isFilmPage}); })
+      .catch(err => { sendResponse({html:null, isFilmPage});
     });
     return true; // async
   }
+
 });
 
 chrome.webNavigation.onCommitted.addListener(

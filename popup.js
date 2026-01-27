@@ -6,7 +6,6 @@ const randomGoal = document.getElementById("random-goal");
 const stopwatch = document.getElementById("stopwatch");
 const startRunBtn = document.getElementById("start-run");
 const searchBlock = document.getElementById("search-block");
-const victory = document.getElementById("victory");
 const returnBtn = document.getElementById("return");
 const saveBtn = document.getElementById("save");
 const statsReturnBtn = document.getElementById("stats-return");
@@ -89,7 +88,6 @@ chrome.runtime.onMessage.addListener(async (message) => {           // listener 
       searchBlock.style.display = "none";
       startBtns.style.display = "none";
       exitDiv.style.display = "none";
-      victory.style.display = "block";
       returnBtn.style.display = "block";
       endBtns.style.display = "block";
       playSound('sounds/fnaf.mp3');
@@ -168,7 +166,7 @@ chrome.runtime.onMessage.addListener(async (message) => {           // listener 
     }
 
     pathList = path.join(" => ");
-    runDisplay.querySelector("label[for='path']").innerHTML = `<br/><div style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 600;"><b>Path:</b></div><div style="font-size: small; font-family: 'Graphik', sans-serif; font-weight: 400; color: #99AABB;">${pathList}</div>`;
+    document.getElementById("path").innerText = `${pathList}`;
   }
   else {
     path = [];
@@ -321,7 +319,9 @@ statsBtn.addEventListener("click", async () => {         // listener for stats b
 
   for (let i = 0; i < 10; i++) {
     if (entries[i]) {
+      // cut off item length to 20 characters with a ... at the end if longer
       item = entries[i][0];
+      item = item.length > 20 ? item.slice(0, 17) + "..." : item;
       num = entries[i][1];
       highest = entries[0][1];
     }
@@ -536,7 +536,6 @@ function returnToMenu() {
   startBtns.style.display = "block";
   stopwatch.style.display = "block";
   randomText.style.display = "none";
-  victory.style.display = "none";
   returnBtn.style.display = "none";
   exitDiv.style.display = "none";
   runDisplay.style.display = "none";
@@ -567,8 +566,39 @@ function getMovieOrCrewName(input) {
   }
 }
 
+function getDirectorAndCast(input) {
+  const doc = new DOMParser().parseFromString(
+    input,
+    "text/html"
+  );
+
+  directorHTML = doc.querySelectorAll("span[class='prettify']");
+  const directors = [...directorHTML].map(el => el.textContent);
+  console.log(directors);
+
+  castHTML = doc.querySelectorAll('div.cast-list.text-sluglist p a');
+  const actors = [...castHTML].slice(0, 3).map(el => el.textContent);
+  console.log(actors);
+
+  return { directors, actors };
+}
+
+function getMoviesFromCrew(input) {
+  const doc = new DOMParser().parseFromString(
+    input,
+    "text/html"
+  );
+
+  topMoviesHTML = doc.querySelectorAll('li.tooltip.griditem div.react-component');
+  const topMovies = [...topMoviesHTML].slice(0, 5).map(el => el.getAttribute("data-item-name")); 
+  console.log(topMovies);  
+
+  return topMovies;
+}
+
 async function startRun(goalInputValue, startInputValue) {
   let uhhhhhhh = false;
+  let directors, actors, goalName, topMovies = [];
   path = [];
 
   // get all recent letterboxd tabs
@@ -581,13 +611,40 @@ async function startRun(goalInputValue, startInputValue) {
     uhhhhhhh = true;
     chrome.tabs.sendMessage(tab.id, { type: "navigateToUrl", payload: startInputValue});
   }
-  
 
   // console.log("Goal URL before fetching HTML:", goalInputValue);
-  goalInputValue = await chrome.runtime.sendMessage({ type: "requestTargetHTML", payload: goalInputValue });
-  // console.log("Goal URL HTML", goalInputValue);
+  let response = await chrome.runtime.sendMessage({ type: "requestTargetHTML", payload: goalInputValue });
+  let goalHTML = response["html"];
+  let isFilmPage = response["isFilmPage"];
 
-  goalName = getMovieOrCrewName(goalInputValue);
+
+
+  goalName = getMovieOrCrewName(goalHTML);
+  if (isFilmPage) {
+    // grab director names and three first actors
+    let response = getDirectorAndCast(goalHTML); 
+    // console.log(response.directors, response.actors);
+    directors = response["directors"];
+    actors = response["actors"];
+
+    if (directors.length === 0) {
+      directors = ["N/A"];
+    }
+    if (actors.length === 0) {
+      actors = ["N/A"];
+    }
+  }
+  else {
+    // grab three first films
+    topMovies = getMoviesFromCrew(goalHTML);
+    if (topMovies.length === 0) {
+      topMovies = ["N/A"];
+    }
+  }
+
+  
+  
+
 
 
 
@@ -600,11 +657,35 @@ async function startRun(goalInputValue, startInputValue) {
   if (!uhhhhhhh) {
     chrome.tabs.sendMessage(tab.id, { type: "refresh" });
   }
-  // hide goal text and box, display "path"
+  // hide goal text and box, display pertinent info and path
   searchBlock.style.display = "none";
   runDisplay.style.display = "block";
-  runDisplay.querySelector("label[for='goal']").innerHTML = `<b><br><div style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 600;">Target: </div></b><div style="font-size: small; font-family: 'Graphik', sans-serif; font-weight: 400; color: #99AABB;">${goalName}</div>`;
+  // runDisplay.querySelector("label[for='goal']").innerHTML = `<b><br><div style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 600;">Target: </div></b><div style="font-size: small; font-family: 'Graphik', sans-serif; font-weight: 400; color: #99AABB;">${goalName}</div>`;
   
+  if (isFilmPage) {
+    document.getElementById("target").innerHTML = `
+    <div style="display: flex; margin-top: 10px; align-items: stretch;">
+      <div class="flex-child" style="border: 3px solid #444C56; width: 55%; padding: 10px; font-size: 30px; color: #00E054;">
+        ${goalName}
+      </div>
+      <div class="flex-child" style="position: relative; width: 30%; margin-left: 10px; font-size: 20px; gap: 10px; display: flex; flex-direction: column; justify-content: space-between;">
+        <div class="" style="border: 3px solid #444C56; width: 100%; padding: 10px; font-size: 12px;"><span style="color: #40BCF4; font-size: 16px;">${directors.join(', ')}</span><br>DIRECTOR(S)</div>
+        <div class="" style="border: 3px solid #444C56; width: 100%; padding: 10px; font-size: 12px;"><span style="color: #FF8000; font-size: 16px;">${actors.join(', ')}</span><br>STARRING</div>
+      </div>
+    </div><br>`;
+  }
+  else {
+    document.getElementById("target").innerHTML = `
+    <div style="display: flex; margin-top: 10px; align-items: stretch;">
+      <div class="flex-child" style="border: 3px solid #444C56; width: 35%; padding: 10px; font-size: 30px; color: #00E054;">
+        ${goalName}
+      </div>
+      <div class="flex-child" style="border: 3px solid #444C56; padding: 10px; margin-left: 10px; width: 50%; font-size: 12px;">
+        <span style="color: #40BCF4; font-size: 16px;">${topMovies.join('<br>')}</span><br>TOP MOVIES
+      </div>
+    </div><br>`;
+  }
+
 
 
   // hide start run button, display exit button
