@@ -24,6 +24,8 @@ const randomText = document.getElementById("random-text");
 const statsBtn = document.getElementById("stats");
 const exitBtn = document.getElementById("exit");
 const exitDiv = document.getElementById("exit-div");
+const githubLink = document.getElementById("github-link");
+const letterboxdLink = document.getElementById("letterboxd-link");
 
 let randomHTML;
 let randomStyle;
@@ -33,6 +35,7 @@ let difference = 0;
 let data;
 let tInterval;
 let movies = {};
+let actors = ["https://letterboxd.com/actor/brad-pitt/","https://letterboxd.com/actor/edward-norton/","https://letterboxd.com/actor/helena-bonham-carter/","https://letterboxd.com/actor/meat-loaf/","https://letterboxd.com/actor/jared-leto/","https://letterboxd.com/actor/morgan-freeman/","https://letterboxd.com/actor/gwyneth-paltrow/","https://letterboxd.com/actor/kevin-spacey/","https://letterboxd.com/actor/john-cassini/","https://letterboxd.com/actor/melanie-laurent/","https://letterboxd.com/actor/christoph-waltz/","https://letterboxd.com/actor/eli-roth/","https://letterboxd.com/actor/michael-fassbender/","https://letterboxd.com/actor/leonardo-dicaprio/","https://letterboxd.com/actor/margot-robbie/","https://letterboxd.com/actor/emile-hirsch/","https://letterboxd.com/actor/margaret-qualley/","https://letterboxd.com/actor/joey-king/","https://letterboxd.com/actor/aaron-taylor-johnson/","https://letterboxd.com/actor/brian-tyree-henry/","https://letterboxd.com/actor/andrew-koji/","https://letterboxd.com/actor/ralph-fiennes/","https://letterboxd.com/actor/f-murray-abraham/","https://letterboxd.com/actor/mathieu-amalric/","https://letterboxd.com/actor/adrien-brody/","https://letterboxd.com/actor/willem-dafoe/","https://letterboxd.com/actor/daniel-craig/","https://letterboxd.com/actor/janelle-monae/","https://letterboxd.com/actor/kathryn-hahn/","https://letterboxd.com/actor/leslie-odom-jr/","https://letterboxd.com/actor/jason-schwartzman/","https://letterboxd.com/actor/scarlett-johansson/","https://letterboxd.com/actor/tom-hanks/","https://letterboxd.com/actor/jeffrey-wright/","https://letterboxd.com/actor/tilda-swinton/","https://letterboxd.com/actor/timothee-chalamet/","https://letterboxd.com/actor/elle-fanning/","https://letterboxd.com/actor/monica-barbaro/","https://letterboxd.com/actor/scoot-mcnairy/","https://letterboxd.com/actor/daniel-radcliffe/","https://letterboxd.com/actor/emma-watson/","https://letterboxd.com/actor/rupert-grint/","https://letterboxd.com/actor/alan-rickman/","https://letterboxd.com/actor/imelda-staunton/","https://letterboxd.com/actor/johnny-depp/","https://letterboxd.com/actor/emily-watson/","https://letterboxd.com/actor/tracey-ullman/","https://letterboxd.com/actor/paul-whitehouse/","https://letterboxd.com/actor/jim-broadbent/","https://letterboxd.com/actor/michael-gambon/","https://letterboxd.com/actor/tim-curry/","https://letterboxd.com/actor/susan-sarandon/","https://letterboxd.com/actor/barry-bostwick/","https://letterboxd.com/actor/richard-obrien-1/","https://letterboxd.com/actor/patricia-quinn/","https://letterboxd.com/actor/seth-rogen/","https://letterboxd.com/actor/kristen-wiig/","https://letterboxd.com/actor/jonah-hill/","https://letterboxd.com/actor/bill-hader/","https://letterboxd.com/actor/michael-cera/","https://letterboxd.com/actor/mike-myers/","https://letterboxd.com/actor/dana-carvey/","https://letterboxd.com/actor/rob-lowe/","https://letterboxd.com/actor/tia-carrere/","https://letterboxd.com/actor/lara-flynn-boyle/","https://letterboxd.com/actor/jack-black-1/","https://letterboxd.com/actor/kyle-gass/","https://letterboxd.com/actor/jr-reed/","https://letterboxd.com/actor/ronnie-james-dio/","https://letterboxd.com/actor/paul-f-tompkins-1/","https://letterboxd.com/actor/christian-bale/","https://letterboxd.com/actor/justin-theroux/","https://letterboxd.com/actor/josh-lucas/","https://letterboxd.com/actor/bill-sage/","https://letterboxd.com/actor/chloe-sevigny/","https://letterboxd.com/actor/ryan-gosling/","https://letterboxd.com/actor/harrison-ford/","https://letterboxd.com/actor/contributor:151128/","https://letterboxd.com/actor/dave-bautista/","https://letterboxd.com/actor/robin-wright/","https://letterboxd.com/actor/ellen-burstyn/","https://letterboxd.com/actor/jennifer-connelly/","https://letterboxd.com/actor/marlon-wayans/","https://letterboxd.com/actor/christopher-mcdonald/","https://letterboxd.com/actor/winona-ryder/","https://letterboxd.com/actor/angelina-jolie/","https://letterboxd.com/actor/clea-duvall/","https://letterboxd.com/actor/brittany-murphy/","https://letterboxd.com/actor/elisabeth-moss/","https://letterboxd.com/actor/heath-ledger/","https://letterboxd.com/actor/aaron-eckhart/","https://letterboxd.com/actor/michael-caine/","https://letterboxd.com/actor/maggie-gyllenhaal/","https://letterboxd.com/actor/tim-robbins/","https://letterboxd.com/actor/bob-gunton/","https://letterboxd.com/actor/william-sadler/","https://letterboxd.com/actor/clancy-brown/","https://letterboxd.com/actor/liam-neeson/","https://letterboxd.com/actor/katie-holmes/","https://letterboxd.com/actor/gary-oldman/", "https://letterboxd.com/actor/tom-hardy/","https://letterboxd.com/actor/joseph-gordon-levitt/","https://letterboxd.com/actor/anne-hathaway/","https://letterboxd.com/actor/robert-downey-jr/","https://letterboxd.com/actor/chris-evans/","https://letterboxd.com/actor/chris-hemsworth/","https://letterboxd.com/actor/josh-brolin/","https://letterboxd.com/actor/mark-ruffalo/","https://letterboxd.com/actor/odessa-azion/","https://letterboxd.com/actor/kevin-oleary-3/","https://letterboxd.com/actor/tyler-the-creator/","https://letterboxd.com/actor/tom-holland-4/","https://letterboxd.com/actor/michael-keaton/","https://letterboxd.com/actor/marisa-tomei/","https://letterboxd.com/actor/jon-favreau/","https://letterboxd.com/actor/ansel-elgort/","https://letterboxd.com/actor/lily-james/","https://letterboxd.com/actor/jon-hamm/","https://letterboxd.com/actor/jamie-foxx/","https://letterboxd.com/actor/annette-bening/","https://letterboxd.com/actor/thora-birch/","https://letterboxd.com/actor/wes-bentley/","https://letterboxd.com/actor/mena-suvari/","https://letterboxd.com/actor/stephen-baldwin/","https://letterboxd.com/actor/gabriel-byrne/","https://letterboxd.com/actor/benicio-del-toro/","https://letterboxd.com/actor/kevin-pollak/","https://letterboxd.com/actor/dave-foley/","https://letterboxd.com/actor/julia-louis-dreyfus/","https://letterboxd.com/actor/hayden-panettiere/","https://letterboxd.com/actor/phyllis-diller/","https://letterboxd.com/actor/michael-douglas/","https://letterboxd.com/actor/sean-penn/","https://letterboxd.com/actor/deborah-kara-unger/","https://letterboxd.com/actor/james-rebhorn/","https://letterboxd.com/actor/peter-donat/","https://letterboxd.com/actor/jamie-lee-curtis/","https://letterboxd.com/actor/josh-hartnett/","https://letterboxd.com/actor/adam-arkin-1/","https://letterboxd.com/actor/michelle-williams/","https://letterboxd.com/actor/adam-hann-byrd/","https://letterboxd.com/actor/halle-berry/","https://letterboxd.com/actor/benjamin-bratt/","https://letterboxd.com/actor/sharon-stone/","https://letterboxd.com/actor/lambert-wilson/","https://letterboxd.com/actor/frances-conroy/","https://letterboxd.com/actor/josh-hamilton/","https://letterboxd.com/actor/bruce-ramsay/","https://letterboxd.com/actor/ethan-hawke/","https://letterboxd.com/actor/vincent-spano/","https://letterboxd.com/actor/john-newton/","https://letterboxd.com/actor/jesse-eisenberg/","https://letterboxd.com/actor/woody-harrelson/","https://letterboxd.com/actor/isla-fisher/","https://letterboxd.com/actor/dave-franco/","https://letterboxd.com/actor/jake-gyllenhaal/","https://letterboxd.com/actor/sarah-gadon-1/","https://letterboxd.com/actor/isabella-rossellini/","https://letterboxd.com/actor/joshua-peace/","https://letterboxd.com/actor/adam-sandler/","https://letterboxd.com/actor/jennifer-aniston/","https://letterboxd.com/actor/mark-strong/","https://letterboxd.com/actor/jodie-turner-smith/","https://letterboxd.com/actor/ryan-reynolds/","https://letterboxd.com/actor/manuel-garcia-rulfo/","https://letterboxd.com/actor/ben-hardy/","https://letterboxd.com/actor/adria-arjona/","https://letterboxd.com/actor/kerry-washington/","https://letterboxd.com/actor/samuel-l-jackson/","https://letterboxd.com/actor/oscar-isaac/","https://letterboxd.com/actor/jacob-elordi/","https://letterboxd.com/actor/mia-goth/","https://letterboxd.com/actor/felix-kammerer/","https://letterboxd.com/actor/lea-seydoux/","https://letterboxd.com/actor/frances-mcdormand/","https://letterboxd.com/actor/ewan-mcgregor/","https://letterboxd.com/actor/david-bradley-1/","https://letterboxd.com/actor/gregory-mann/","https://letterboxd.com/actor/burn-gorman/","https://letterboxd.com/actor/ron-perlman/","https://letterboxd.com/actor/kurt-russell/","https://letterboxd.com/actor/zoe-bell/","https://letterboxd.com/actor/rosario-dawson/","https://letterboxd.com/actor/vanessa-ferlito/","https://letterboxd.com/actor/sydney-tamiia-poitier/","https://letterboxd.com/actor/jeff-goldblum/","https://letterboxd.com/actor/julianne-moore/","https://letterboxd.com/actor/peter-postlethwaite/","https://letterboxd.com/actor/arliss-howard/","https://letterboxd.com/actor/richard-attenborough/","https://letterboxd.com/actor/kyle-chandler/","https://letterboxd.com/actor/vera-farmiga/","https://letterboxd.com/actor/millie-bobby-brown/","https://letterboxd.com/actor/ken-watanabe/","https://letterboxd.com/actor/zhang-ziyi/","https://letterboxd.com/actor/jay-hernandez/","https://letterboxd.com/actor/derek-richardson/","https://letterboxd.com/actor/eythor-gudjonsson/","https://letterboxd.com/actor/barbara-nedeljakova/","https://letterboxd.com/actor/jana-kaderabkova/", "https://letterboxd.com/actor/charles-parnell/","https://letterboxd.com/actor/kerry-omalley/","https://letterboxd.com/actor/hugh-jackman/","https://letterboxd.com/actor/james-mcavoy/","https://letterboxd.com/actor/patrick-stewart/","https://letterboxd.com/actor/ian-mckellen/","https://letterboxd.com/actor/chiwetel-ejiofor/","https://letterboxd.com/actor/lupita-nyongo/","https://letterboxd.com/actor/benedict-cumberbatch/","https://letterboxd.com/actor/paul-dano/","https://letterboxd.com/actor/jennifer-lawrence/","https://letterboxd.com/actor/rose-byrne/","https://letterboxd.com/actor/kevin-bacon/","https://letterboxd.com/actor/contributor:17664/","https://letterboxd.com/actor/matthew-mcconaughey/","https://letterboxd.com/actor/ben-kingsley/","https://letterboxd.com/actor/max-von-sydow/","https://letterboxd.com/actor/america-ferrera/","https://letterboxd.com/actor/ariana-greenblatt/","https://letterboxd.com/actor/issa-rae/","https://letterboxd.com/actor/domhnall-gleeson/","https://letterboxd.com/actor/rachel-mcadams/","https://letterboxd.com/actor/bill-nighy/","https://letterboxd.com/actor/tom-hollander/","https://letterboxd.com/actor/diego-calva/","https://letterboxd.com/actor/jovan-adepo/","https://letterboxd.com/actor/jean-smart/","https://letterboxd.com/actor/marcia-gay-harden/","https://letterboxd.com/actor/william-hurt/","https://letterboxd.com/actor/jena-malone/","https://letterboxd.com/actor/brian-h-dierker/","https://letterboxd.com/actor/brian-cox-2/","https://letterboxd.com/actor/ophelia-lovibond/","https://letterboxd.com/actor/olwen-catherine-kelly/","https://letterboxd.com/actor/michael-mcelhatton/","https://letterboxd.com/actor/christina-ricci/","https://letterboxd.com/actor/john-goodman/","https://letterboxd.com/actor/matthew-fox/","https://letterboxd.com/actor/elisha-cuthbert/","https://letterboxd.com/actor/timothy-olyphant/","https://letterboxd.com/actor/christopher-marquette/","https://letterboxd.com/actor/demi-moore/","https://letterboxd.com/actor/dennis-quaid/","https://letterboxd.com/actor/edward-hamilton-clark/","https://letterboxd.com/actor/gore-abrams/","https://letterboxd.com/actor/emma-stone/","https://letterboxd.com/actor/ramy-youssef/","https://letterboxd.com/actor/christopher-abbott/","https://letterboxd.com/actor/russell-crowe/","https://letterboxd.com/actor/angourie-rice/","https://letterboxd.com/actor/matt-bomer/","https://letterboxd.com/actor/jesse-plemons/","https://letterboxd.com/actor/hong-chau/","https://letterboxd.com/actor/patrick-wilson/","https://letterboxd.com/actor/lili-taylor/","https://letterboxd.com/actor/ron-livingston/","https://letterboxd.com/actor/hayley-mcfarland/","https://letterboxd.com/actor/steve-carell/","https://letterboxd.com/actor/lio-tipton/","https://letterboxd.com/actor/will-ferrell/","https://letterboxd.com/actor/sofia-vergara/","https://letterboxd.com/actor/miranda-cosgrove/","https://letterboxd.com/actor/lily-rose-depp/","https://letterboxd.com/actor/nicholas-hoult/","https://letterboxd.com/actor/bill-skarsgard/","https://letterboxd.com/actor/john-david-washington/","https://letterboxd.com/actor/robert-pattinson/","https://letterboxd.com/actor/elizabeth-debicki/","https://letterboxd.com/actor/kenneth-branagh/","https://letterboxd.com/actor/dimple-kapadia/","https://letterboxd.com/actor/robert-redford/","https://letterboxd.com/actor/sebastian-stan/","https://letterboxd.com/actor/shameik-moore/","https://letterboxd.com/actor/jake-johnson-1/","https://letterboxd.com/actor/hailee-steinfeld/","https://letterboxd.com/actor/mahershala-ali/","https://letterboxd.com/actor/joaquin-phoenix/","https://letterboxd.com/actor/robert-de-niro/","https://letterboxd.com/actor/zazie-beetz/","https://letterboxd.com/actor/brett-cullen/","https://letterboxd.com/actor/luna-lauren-velez/","https://letterboxd.com/actor/gemma-chan/","https://letterboxd.com/actor/richard-madden/","https://letterboxd.com/actor/salma-hayek-pinault/","https://letterboxd.com/actor/kumail-nanjiani/","https://letterboxd.com/actor/vin-diesel/","https://letterboxd.com/actor/paul-walker/","https://letterboxd.com/actor/dwayne-johnson/","https://letterboxd.com/actor/jordana-brewster/","https://letterboxd.com/actor/michelle-rodriguez/","https://letterboxd.com/actor/jessica-rothe/","https://letterboxd.com/actor/h-jon-benjamin/","https://letterboxd.com/actor/michelle-dockery/","https://letterboxd.com/actor/brett-gelman/","https://letterboxd.com/actor/henry-golding/","https://letterboxd.com/actor/haruka-abe/","https://letterboxd.com/actor/ursula-corbero/","https://letterboxd.com/actor/samara-weaving/","https://letterboxd.com/actor/noah-centineo/","https://letterboxd.com/actor/callina-liang/", "https://letterboxd.com/actor/cody-rhodes-1/","https://letterboxd.com/actor/david-dastmalchian/","https://letterboxd.com/actor/anya-taylor-joy/","https://letterboxd.com/actor/janet-mcteer-1/","https://letterboxd.com/actor/paul-adelstein/","https://letterboxd.com/actor/stanley-tucci/","https://letterboxd.com/actor/john-lithgow/","https://letterboxd.com/actor/lucian-msamati/","https://letterboxd.com/actor/brendan-gleeson/","https://letterboxd.com/actor/al-pacino/","https://letterboxd.com/actor/steven-bauer/","https://letterboxd.com/actor/michelle-pfeiffer/","https://letterboxd.com/actor/mary-elizabeth-mastrantonio/","https://letterboxd.com/actor/robert-loggia/","https://letterboxd.com/actor/bryan-cranston/","https://letterboxd.com/actor/koyu-rankin/","https://letterboxd.com/actor/bob-balaban/","https://letterboxd.com/actor/bill-murray/","https://letterboxd.com/actor/mia-threapleton/","https://letterboxd.com/actor/riz-ahmed/","https://letterboxd.com/actor/tom-hulce/","https://letterboxd.com/actor/elizabeth-berridge/","https://letterboxd.com/actor/simon-callow/","https://letterboxd.com/actor/roy-dotrice/","https://letterboxd.com/actor/olivia-cooke/","https://letterboxd.com/actor/paul-raci/","https://letterboxd.com/actor/lauren-ridloff/","https://letterboxd.com/actor/kirsten-dunst/","https://letterboxd.com/actor/steve-coogan/","https://letterboxd.com/actor/judy-davis/","https://letterboxd.com/actor/rip-torn/","https://letterboxd.com/actor/george-clooney/","https://letterboxd.com/actor/meryl-streep/","https://letterboxd.com/actor/wallace-wolodarsky/","https://letterboxd.com/actor/eric-chase-anderson/","https://letterboxd.com/actor/thomas-kretschmann/","https://letterboxd.com/actor/frank-finlay/","https://letterboxd.com/actor/maureen-lipman/","https://letterboxd.com/actor/emilia-fox/","https://letterboxd.com/actor/zendaya/","https://letterboxd.com/actor/jacob-batalon/","https://letterboxd.com/actor/michael-shannon/","https://letterboxd.com/actor/josh-oconnor/","https://letterboxd.com/actor/glenn-close/","https://letterboxd.com/actor/mila-kunis/","https://letterboxd.com/actor/mark-hamill/","https://letterboxd.com/actor/carrie-fisher/","https://letterboxd.com/actor/adam-driver/","https://letterboxd.com/actor/daisy-ridley/","https://letterboxd.com/actor/eva-green/","https://letterboxd.com/actor/mads-mikkelsen/","https://letterboxd.com/actor/judi-dench/","https://letterboxd.com/actor/trevante-rhodes/","https://letterboxd.com/actor/andre-holland/","https://letterboxd.com/actor/ashton-sanders/","https://letterboxd.com/actor/jharrel-jerome/","https://letterboxd.com/actor/taraji-p-henson/","https://letterboxd.com/actor/octavia-spencer/","https://letterboxd.com/actor/kevin-costner/","https://letterboxd.com/actor/william/","https://letterboxd.com/actor/leslie-mann/","https://letterboxd.com/actor/cynthia-erivo/","https://letterboxd.com/actor/clarke-peters/","https://letterboxd.com/actor/vanessa-bell-calloway/","https://letterboxd.com/actor/kate-hudson/","https://letterboxd.com/actor/annie-parisse/","https://letterboxd.com/actor/adam-goldberg/","https://letterboxd.com/actor/cameron-diaz/","https://letterboxd.com/actor/kate-winslet/","https://letterboxd.com/actor/jude-law/","https://letterboxd.com/actor/eli-wallach/","https://letterboxd.com/actor/lin-manuel-miranda/","https://letterboxd.com/actor/renee-elise-goldsberry/","https://letterboxd.com/actor/phillipa-soo/","https://letterboxd.com/actor/daveed-diggs/","https://letterboxd.com/actor/tom-bateman-1/","https://letterboxd.com/actor/josh-gad/","https://letterboxd.com/actor/lidya-jewett/","https://letterboxd.com/actor/olivia-marcum/","https://letterboxd.com/actor/ann-dowd/","https://letterboxd.com/actor/jennifer-nettles/","https://letterboxd.com/actor/kingsley-ben-adir/","https://letterboxd.com/actor/eli-goree/","https://letterboxd.com/actor/aldis-hodge/","https://letterboxd.com/actor/joaquina-kalukango-1/","https://letterboxd.com/actor/mary-elizabeth-winstead/","https://letterboxd.com/actor/ellen-wong/","https://letterboxd.com/actor/kieran-culkin/","https://letterboxd.com/actor/alison-pill/","https://letterboxd.com/actor/tom-blyth/","https://letterboxd.com/actor/rachel-zegler/","https://letterboxd.com/actor/peter-dinklage/","https://letterboxd.com/actor/hunter-schafer/","https://letterboxd.com/actor/lynn-adrianna/","https://letterboxd.com/actor/lisa-renee-pitts/","https://letterboxd.com/actor/gabe-gomez/","https://letterboxd.com/actor/roman-griffin-davis/","https://letterboxd.com/actor/thomasin-mckenzie/","https://letterboxd.com/actor/taika-waititi/","https://letterboxd.com/actor/sam-rockwell/", "https://letterboxd.com/actor/gary-sinise/","https://letterboxd.com/actor/sally-field/","https://letterboxd.com/actor/mykelti-williamson/","https://letterboxd.com/actor/christopher-walken/","https://letterboxd.com/actor/martin-sheen/","https://letterboxd.com/actor/nathalie-baye/","https://letterboxd.com/actor/tim-allen/","https://letterboxd.com/actor/don-rickles/","https://letterboxd.com/actor/jim-varney/","https://letterboxd.com/actor/wallace-shawn/","https://letterboxd.com/actor/owen-wilson/","https://letterboxd.com/actor/paul-newman/","https://letterboxd.com/actor/bonnie-hunt/","https://letterboxd.com/actor/larry-the-cable-guy/","https://letterboxd.com/actor/cheech-marin/","https://letterboxd.com/actor/zoe-kravitz/","https://letterboxd.com/actor/colin-farrell/","https://letterboxd.com/actor/josh-hutcherson/","https://letterboxd.com/actor/liam-hemsworth/","https://letterboxd.com/actor/elizabeth-banks/","https://letterboxd.com/actor/lakeith-stanfield/","https://letterboxd.com/actor/julia-fox/","https://letterboxd.com/actor/kevin-garnett/","https://letterboxd.com/actor/idina-menzel/","https://letterboxd.com/actor/benedict-wong/","https://letterboxd.com/actor/jessica-chastain/","https://letterboxd.com/actor/casey-affleck/","https://letterboxd.com/actor/rebecca-ferguson/","https://letterboxd.com/actor/jason-momoa/","https://letterboxd.com/actor/stellan-skarsgard/","https://letterboxd.com/actor/javier-bardem/","https://letterboxd.com/actor/saoirse-ronan/","https://letterboxd.com/actor/laurie-metcalf/","https://letterboxd.com/actor/tracy-letts/","https://letterboxd.com/actor/lucas-hedges/","https://letterboxd.com/actor/florence-pugh/","https://letterboxd.com/actor/eliza-scanlen/","https://letterboxd.com/actor/laura-dern/","https://letterboxd.com/actor/renate-reinsve/","https://letterboxd.com/actor/inga-ibsdotter-lilleaas/","https://letterboxd.com/actor/anders-danielsen-lie/","https://letterboxd.com/actor/cate-blanchett/","https://letterboxd.com/actor/julia-ormond/","https://letterboxd.com/actor/jason-flemyng/","https://letterboxd.com/actor/sharlto-copley/","https://letterboxd.com/actor/lesley-manville/","https://letterboxd.com/actor/dimitrius-schuster-koloamatangi/","https://letterboxd.com/actor/ravi-narayan/","https://letterboxd.com/actor/michael-homick/","https://letterboxd.com/actor/stefan-grube/","https://letterboxd.com/actor/tom-cruise/","https://letterboxd.com/actor/val-kilmer/","https://letterboxd.com/actor/miles-teller/","https://letterboxd.com/actor/bashir-salahuddin/","https://letterboxd.com/actor/barry-keoghan/","https://letterboxd.com/actor/brian-darcy-james/","https://letterboxd.com/actor/hudson-mcguire/","https://letterboxd.com/actor/henry-glendon-walter-v/","https://letterboxd.com/actor/robert-levey-ii/","https://letterboxd.com/actor/andrew-garfield/","https://letterboxd.com/actor/yura-borisov/","https://letterboxd.com/actor/cooper-koch/","https://letterboxd.com/actor/cooper-hoffman/","https://letterboxd.com/actor/ben-affleck/","https://letterboxd.com/actor/rosamund-pike/","https://letterboxd.com/actor/neil-patrick-harris/","https://letterboxd.com/actor/tyler-perry/","https://letterboxd.com/actor/carrie-coon/","https://letterboxd.com/actor/emily-blunt/","https://letterboxd.com/actor/john-krasinski/","https://letterboxd.com/actor/millicent-simmonds/","https://letterboxd.com/actor/noah-jupe/","https://letterboxd.com/actor/cillian-murphy/","https://letterboxd.com/actor/robbie-coltrane/","https://letterboxd.com/actor/richard-harris/","https://letterboxd.com/actor/tom-felton/","https://letterboxd.com/actor/toby-jones/","https://letterboxd.com/actor/logan-lerman/","https://letterboxd.com/actor/ezra-miller/","https://letterboxd.com/actor/mae-whitman/","https://letterboxd.com/actor/kate-walsh/","https://letterboxd.com/actor/mia-wasikowska/","https://letterboxd.com/actor/crispin-glover/","https://letterboxd.com/actor/ben-whishaw/","https://letterboxd.com/actor/hugh-bonneville/","https://letterboxd.com/actor/sally-hawkins/","https://letterboxd.com/actor/madeleine-harris/","https://letterboxd.com/actor/samuel-joslin/","https://letterboxd.com/actor/dianne-wiest-1/","https://letterboxd.com/actor/anthony-michael-hall/","https://letterboxd.com/actor/kathy-baker/","https://letterboxd.com/actor/geoffrey-rush/","https://letterboxd.com/actor/orlando-bloom/","https://letterboxd.com/actor/keira-knightley/","https://letterboxd.com/actor/jack-davenport/","https://letterboxd.com/actor/freddie-highmore/","https://letterboxd.com/actor/david-kelly/","https://letterboxd.com/actor/noah-taylor/","https://letterboxd.com/actor/channing-tatum/","https://letterboxd.com/actor/brie-larson/", "https://letterboxd.com/actor/jason-bateman/","https://letterboxd.com/actor/charlize-theron/","https://letterboxd.com/actor/chris-pratt/","https://letterboxd.com/actor/zac-efron/","https://letterboxd.com/actor/don-cheadle/","https://letterboxd.com/actor/bradley-cooper/","https://letterboxd.com/actor/vincent-d-onofrio/","https://letterboxd.com/actor/gwyneth-paltrow/","https://letterboxd.com/actor/samuel-l-jackson/","https://letterboxd.com/actor/scarlett-johansson/","https://letterboxd.com/actor/tom-holland-4/","https://letterboxd.com/actor/benedict-cumberbatch/","https://letterboxd.com/actor/chris-hemsworth/", "https://letterboxd.com/actor/chris-evans/", "https://letterboxd.com/actor/josh-brolin/", "https://letterboxd.com/actor/tom-hardy/", "https://letterboxd.com/actor/joseph-gordon-levitt/", "https://letterboxd.com/actor/michael-keaton/", "https://letterboxd.com/actor/marisa-tomei/", "https://letterboxd.com/actor/jon-favreau/", "https://letterboxd.com/actor/lily-james/", "https://letterboxd.com/actor/jon-hamm/", "https://letterboxd.com/actor/jamie-foxx/", "https://letterboxd.com/actor/will-ferrell/", "https://letterboxd.com/actor/samuel-l-jackson/", "https://letterboxd.com/actor/emma-stone/", "https://letterboxd.com/actor/christopher-walken/", "https://letterboxd.com/actor/russell-crowe/", "https://letterboxd.com/actor/hong-chau/", "https://letterboxd.com/actor/patrick-wilson/", "https://letterboxd.com/actor/lili-taylor/", "https://letterboxd.com/actor/hayley-mcfarland/", "https://letterboxd.com/actor/timothy-olyphant/"];
 let running = false;
 let uhhhhh = false;
 let music = false;
@@ -215,23 +218,58 @@ randomBtn.addEventListener("click", async () => {         // listener for random
     }
   }
 
+  let startURL;
+  let goalURL;
+  
+  if (Math.random() < 0.5) {
+    startURL = movies[Math.floor(Math.random() * Object.keys(movies).length)].url;
 
-  startIndex = Math.floor(Math.random() * Object.keys(movies).length);
+    if (Math.random() < 0.5) {
+      goalURL = movies[Math.floor(Math.random() * Object.keys(movies).length)].url;
 
-  // Send a message to the content script running in that tab
-  chrome.tabs.sendMessage(tab.id, { type: "navigateToUrl", payload: movies[startIndex].url});
+      while (goalURL === startURL) {
+        goalURL = movies[Math.floor(Math.random() * Object.keys(movies).length)].url;
+      }
+    }
+    else {
+      goalURL = actors[Math.floor(Math.random() * actors.length)];
 
-  goalIndex = Math.floor(Math.random() * Object.keys(movies).length);
+      while (goalURL === startURL) {
+        goalURL = actors[Math.floor(Math.random() * actors.length)];
+      }
+    }
 
-  while (goalIndex === startIndex) {
-    goalIndex = Math.floor(Math.random() * Object.keys(movies).length);
+    chrome.tabs.sendMessage(tab.id, { type: "navigateToUrl", payload: startURL});
+
+
   }
+  else {
+    startURL = actors[Math.floor(Math.random() * actors.length)];
+
+    if (Math.random() < 0.5) {
+      goalURL = movies[Math.floor(Math.random() * Object.keys(movies).length)].url;
+
+      while (goalURL === startURL) {
+        goalURL = movies[Math.floor(Math.random() * Object.keys(movies).length)].url;
+      }
+    }
+    else {
+      goalURL = actors[Math.floor(Math.random() * actors.length)];
+
+      while (goalURL === startURL) {
+        goalURL = actors[Math.floor(Math.random() * actors.length)];
+      }
+    }
+
+    chrome.tabs.sendMessage(tab.id, { type: "navigateToUrl", payload: startURL});
+  }
+
 
   chrome.tabs.onUpdated.addListener(function listener(tabId, info) {
     if (tabId === tab.id && info.status === "complete") {
       chrome.tabs.onUpdated.removeListener(listener);
-      startInput.value = movies[startIndex].url;
-      goalInput.value = movies[goalIndex].url;
+      startInput.value = startURL;
+      goalInput.value = goalURL;
       startRun(goalInput.value, startInput.value);
     }
   });
@@ -265,7 +303,12 @@ async function fillRandom() {
     }
   }
 
-  return movies[Math.floor(Math.random() * Object.keys(movies).length)].url;
+  if (Math.random() < 0.5) {
+    return movies[Math.floor(Math.random() * Object.keys(movies).length)].url;
+  }
+  else {
+    return actors[Math.floor(Math.random() * actors.length)];
+  }
 }
 
 statsBtn.addEventListener("click", async () => {         // listener for stats button
@@ -321,7 +364,7 @@ statsBtn.addEventListener("click", async () => {         // listener for stats b
     if (entries[i]) {
       // cut off item length to 20 characters with a ... at the end if longer
       item = entries[i][0];
-      item = item.length > 20 ? item.slice(0, 17) + "..." : item;
+      item = item.length > 19 ? item.slice(0, 16) + "..." : item;
       num = entries[i][1];
       highest = entries[0][1];
     }
@@ -380,7 +423,7 @@ statsBtn.addEventListener("click", async () => {         // listener for stats b
   // console.log(await chrome.storage.local.get("wins"));
   
   await labelSpacing();
-  await loadData();
+  await loadSavedRuns();
 });
 
 function labelSpacing() {
@@ -400,13 +443,13 @@ function labelSpacing() {
   const angleRad = 60 * Math.PI / 180;
 
   const paddingBottom =
-    Math.ceil(longestLength * charWidth * Math.sin(angleRad)) - 20;
+    Math.ceil(longestLength * charWidth * Math.sin(angleRad)) - 40;
 
   statsBarsItems.style.paddingBottom = `${paddingBottom}px`;
 }
 
       
-async function loadData() {
+async function loadSavedRuns() {
   document.getElementById("saved-runs-list").innerHTML = "";
   data = await chrome.storage.local.get("paths");
   if (!data.paths) {
@@ -464,7 +507,7 @@ document.addEventListener("click", async e => {
 
   console.log(`Deleted run at index: ${index}`);
 
-  await loadData();
+  await loadSavedRuns();
 });
 
 exitBtn.addEventListener("click", async () => {         // listener for exiting the run
@@ -670,7 +713,7 @@ async function startRun(goalInputValue, startInputValue) {
       </div>
       <div class="flex-child" style="position: relative; width: 30%; margin-left: 10px; font-size: 20px; gap: 10px; display: flex; flex-direction: column; justify-content: space-between;">
         <div class="" style="border: 3px solid #444C56; width: 100%; padding: 10px; font-size: 12px;"><span style="color: #40BCF4; font-size: 16px;">${directors.join(', ')}</span><br>DIRECTOR(S)</div>
-        <div class="" style="border: 3px solid #444C56; width: 100%; padding: 10px; font-size: 12px;"><span style="color: #FF8000; font-size: 16px;">${actors.join(', ')}</span><br>STARRING</div>
+        <div class="" style="border: 3px solid #444C56; width: 100%; padding: 10px; font-size: 12px;"><span style="color: #FF8000; font-size: 16px;">${actors.join('<div style="height: 8px;"></div>')}</span><br>STARRING</div>
       </div>
     </div><br>`;
   }
@@ -681,7 +724,7 @@ async function startRun(goalInputValue, startInputValue) {
         ${goalName}
       </div>
       <div class="flex-child" style="border: 3px solid #444C56; padding: 10px; margin-left: 10px; width: 50%; font-size: 12px;">
-        <span style="color: #40BCF4; font-size: 16px;">${topMovies.join('<br>')}</span><br>TOP MOVIES
+        <span style="color: #40BCF4; font-size: 16px;">${topMovies.join('<div style="height: 8px;"></div>')}</span><br>TOP MOVIES
       </div>
     </div><br>`;
   }
@@ -791,3 +834,24 @@ async function backgroundMusic(url, volume = 0.10) {
   currentSource = source;
   source.start();
 }
+
+
+githubLink.addEventListener("click", () => {
+  chrome.tabs.create({ url: "https://github.com/RoastedPotato05" });
+});
+
+githubLink.addEventListener("mouseover", () => {
+  githubLink.style.cursor = "pointer";
+});
+
+letterboxdLink.addEventListener("click", () => {
+  chrome.tabs.create({ url: "https://letterboxd.com/RoastedPotato05/" });
+});
+
+letterboxdLink.addEventListener("mouseover", () => {
+  letterboxdLink.style.cursor = "pointer";
+});
+
+stopwatch.addEventListener("mouseover", () => {
+  stopwatch.style.cursor = "default";
+});
