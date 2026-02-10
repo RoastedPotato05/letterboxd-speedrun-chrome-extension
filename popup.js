@@ -483,7 +483,8 @@ async function loadSavedRuns() {
     statsEntry.appendChild(timeEntry);
 
     const pathEntry = document.createElement("div");
-    pathEntry.textContent = `${data.paths[data.paths.length - 1 - i].path.join(" => ")}`;
+    // make first item orange and last item green
+    pathEntry.innerHTML = `<span style="color: #FF8000"><b>${data.paths[data.paths.length - 1 - i].path[0]}</b></span> => ${data.paths[data.paths.length - 1 - i].path.slice(1, data.paths[data.paths.length - 1 - i].path.length - 1).join(" => ")} => <span style="color: #00E054"><b>${data.paths[data.paths.length - 1 - i].path[data.paths[data.paths.length - 1 - i].path.length - 1]}</b></span>`;
     statsEntry.appendChild(pathEntry);
 
     document.getElementById("saved-runs-list").appendChild(statsEntry);

@@ -9,10 +9,10 @@
 </head>
 <body>
   <div class="container">
-    <h1 style="font-size: 42px; font-family: 'Graphik', sans-serif; font-weight: 600; letter-spacing: -1px;">Letterboxd Speedrun</h1>
+    <h1 style="font-size: 42px; font-family: 'Graphik', sans-serif; font-weight: 600; letter-spacing: -1px;">Letterboxd Speedrun</h1><br><br>
 
     <div id="run-display" style="display: none; font-size: large; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #99AABB;">
-      <br><label style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #99AABB;">TARGET</label>
+      <label style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #99AABB;">TARGET</label>
       <div id="target">
         
       </div>
@@ -22,7 +22,7 @@
       </div>
       <!-- <label for="goal"></label> -->
       <!-- <label for="path"></label> -->
-    </div><br><br>
+    </div>
 
     <div id="search-block" style="width: 104%">
       <div class="search-block" id="start-input-block">
@@ -103,6 +103,7 @@
       <div class="flex-child" style="width: 47%;">
         <button id="save" type="button" class="primary-green" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; position: relative; right: -4%; height: 60px;">Save</button>
       </div>
+      <br><br>
     </div>
 
     
@@ -113,9 +114,9 @@
     
     <div id="status" class="status"></div>
 
-    <hr style="width:100%"/>
+    <!-- <hr style="width:100%; border:none; background-color:#99AABB; height: 1px"/> -->
 
-    <footer style="background: #161c22; height: 120px" id="page-footer">
+    <footer style="background: #161c22; height: 126px" id="page-footer">
       <div class="stopwatch-container" id="stopwatch" style="font-size: large; background: #161c22;">
         <strong><div id="display" style="font-family: 'Graphik', sans-serif; font-size: 76px; position: relative; left: 20px; top: -12px">
           <span id="minutes" style="color: #FF8000">00</span>:<span id="seconds" style="color: #00E054">00</span>.<span id="milliseconds" style="color: #40BCF4">000</span>
@@ -129,10 +130,10 @@
           <button id="clear-stats" class="primary-orange" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; position: relative; top: 12px; right: -4%; height: 80px;">Clear Stats</button>
         </div>
       </div>
-      <div id="credits" style="font-size: small; background: #161c22;">
-        <div class="flex-child" style="color: #99AABB; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; margin-left: 12px; position: relative; top: -6px;">Created by: @RoastedPotato05</div>
-        <div class="flex-child" style="margin-left: 12px;"><img id="github-link" src="images/github.png" style="width: 20px; height: 20px; position: relative; top: -2px"></div>
-        <div class="flex-child" style="margin-left: 12px;"><img id="letterboxd-link" src="images/letterboxd.png" style="width: 20px; height: 20px; position: relative; top: -2px"></div>
+      <div id="credits" style="font-size: small; background: #14181c; height: 32px;">
+        <div class="flex-child" style="color: #99AABB; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; margin-left: 12px; position: relative; top: 2px;">Created by: @RoastedPotato05</div>
+        <div class="flex-child" style="margin-left: 12px;"><img id="github-link" src="images/github.png" style="width: 20px; height: 20px; position: relative; top: 6px"></div>
+        <div class="flex-child" style="margin-left: 12px;"><img id="letterboxd-link" src="images/letterboxd.png" style="width: 20px; height: 20px; position: relative; top: 6px"></div>
       </div>
     </footer>
   </div>
