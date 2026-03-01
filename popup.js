@@ -3,8 +3,11 @@ const startInput = document.getElementById("search-start");
 const goalInput = document.getElementById("search-goal");
 const randomStart = document.getElementById("random-start");
 const randomGoal = document.getElementById("random-goal");
+const randomRunStart = document.getElementById("endless-search-start");
+const display = document.getElementById("display");
 const stopwatch = document.getElementById("stopwatch");
 const startRunBtn = document.getElementById("start-run");
+const startRandomRunBtn = document.getElementById("endless-start-run");
 const searchBlock = document.getElementById("search-block");
 const returnBtn = document.getElementById("return");
 const saveBtn = document.getElementById("save");
@@ -26,6 +29,8 @@ const exitBtn = document.getElementById("exit");
 const exitDiv = document.getElementById("exit-div");
 const githubLink = document.getElementById("github-link");
 const letterboxdLink = document.getElementById("letterboxd-link");
+const nav = document.getElementById("page-nav");
+const gamemode = document.getElementById("gamemode");
 
 let randomHTML;
 let randomStyle;
@@ -40,7 +45,10 @@ let running = false;
 let uhhhhh = false;
 let music = false;
 let path = [];
-const display = document.getElementById("display");
+let pages = ["STANDARD", "MULTI-GOAL", "ENDLESS"];
+let currentPage = pages[0];
+let randomRunGoal = "";
+
 
 function fixInput(input) {
   console.log(input);
@@ -159,6 +167,11 @@ chrome.runtime.onMessage.addListener(async (message) => {           // listener 
       await chrome.storage.local.set( {mostVisited} );
 
     }
+    else if (message.payload.url === randomRunGoal) {
+      console.log("found random goal");
+      randomRunGoal = await fillRandom();
+      continueRun(randomRunGoal, message.payload.url);
+    }
     else {
       item = message.payload.item;
       if (path.includes(item)) {
@@ -189,6 +202,21 @@ startRunBtn.addEventListener("click", async () => {         // listener for init
     
     await startRun(goalInput.value, startInput.value);
     
+  }
+});
+
+startRandomRunBtn.addEventListener("click", async () => {
+  if (randomRunStart.value) {
+    if (randomRunStart.value.split("/").length > 6) {
+      randomRunStart.value = fixInput(randomRunStart.value)
+    }
+
+    randomRunGoal = await fillRandom();
+    
+
+    console.log("starting");
+    currentPage = "ENDLESS";
+    await startRun(randomRunGoal, randomRunStart.value);
   }
 });
 
@@ -270,6 +298,8 @@ randomBtn.addEventListener("click", async () => {         // listener for random
       chrome.tabs.onUpdated.removeListener(listener);
       startInput.value = startURL;
       goalInput.value = goalURL;
+      randomText.style.display = "none";
+      dicePng.style.display = "block";
       startRun(goalInput.value, startInput.value);
     }
   });
@@ -282,6 +312,10 @@ randomStart.addEventListener("click", async () => {
 
 randomGoal.addEventListener("click", async () => {
   goalInput.value = await fillRandom();
+});
+
+document.getElementById("endless-random-start").addEventListener("click", async () => {
+  document.getElementById("endless-search-start").value = await fillRandom();
 });
 
 async function fillRandom() {
@@ -312,13 +346,16 @@ async function fillRandom() {
 }
 
 statsBtn.addEventListener("click", async () => {         // listener for stats button
-  searchBlock.style.display = "none";
-  startBtns.style.display = "none";
-  exitDiv.style.display = "none";
-  stopwatch.style.display = "none";
+  await statsPage();
+});
 
-  statsDisplay.style.display = "block";
-  statsBtns.style.display = "block";
+document.getElementById("endless-stats").addEventListener("click", async () => {
+  await statsPage();
+});
+
+async function statsPage() {
+  displayStats();
+  
 
   data = await chrome.storage.local.get(null);
 
@@ -424,7 +461,7 @@ statsBtn.addEventListener("click", async () => {         // listener for stats b
   
   await labelSpacing();
   await loadSavedRuns();
-});
+}
 
 function labelSpacing() {
   labels = document.getElementById("stats-bars-items").children;
@@ -513,18 +550,18 @@ document.addEventListener("click", async e => {
 
 exitBtn.addEventListener("click", async () => {         // listener for exiting the run
   stop();
-  // let { winStreak = 0 } = await chrome.storage.local.get("win-streak");
+  reset();
   let winStreak = 0;
   await chrome.storage.local.set( {winStreak} );
-  returnToMenu();
+  navToPage(currentPage);
 });
 
 returnBtn.addEventListener("click", async () => {         // listener for restarting on return button click
-  returnToMenu();
+  navToPage(currentPage);
 });
 
 statsReturnBtn.addEventListener("click", async () => {         // listener for returning from stats display
-  returnToMenu();
+  navToPage(currentPage);
 });
 
 clearStatsBtn.addEventListener("click", async () => {         // listener for clearing stats
@@ -572,26 +609,12 @@ saveBtn.addEventListener("click", async () => {         // listener for saving r
 });
 
 function returnToMenu() {
-  // randomBtn.innerHTML = randomHTML;
-  // randomBtn.style = randomStyle;
-  
-  dicePng.style.display = "block";
-  searchBlock.style.display = "block";
-  startBtns.style.display = "block";
-  stopwatch.style.display = "block";
-  randomText.style.display = "none";
-  returnBtn.style.display = "none";
-  exitDiv.style.display = "none";
-  runDisplay.style.display = "none";
-  endBtns.style.display = "none";
-  statsDisplay.style.display = "none";
-  statsBtns.style.display = "none";
-  saveBtn.textContent = "Save";
   document.getElementById("minutes").textContent = "00";
   document.getElementById("seconds").textContent = "00";
   document.getElementById("milliseconds").textContent = "000";
   difference = 0;
   path = [];
+  displayStandard();
 }
 
 function getMovieOrCrewName(input) {
@@ -686,11 +709,7 @@ async function startRun(goalInputValue, startInputValue) {
     }
   }
 
-  
-  
-
-
-
+  clearPages();
 
   await chrome.scripting.executeScript({    // pretty much refreshes the content script otherwise it's 'out of date' after the
     target: { tabId: tab.id },              // extension is refreshed and theres nothing to catch the message to refresh
@@ -702,8 +721,6 @@ async function startRun(goalInputValue, startInputValue) {
     chrome.tabs.sendMessage(tab.id, { type: "refresh" });
   }
   // hide goal text and box, display pertinent info and path
-  searchBlock.style.display = "none";
-  runDisplay.style.display = "block";
   // runDisplay.querySelector("label[for='goal']").innerHTML = `<b><br><div style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 600;">Target: </div></b><div style="font-size: small; font-family: 'Graphik', sans-serif; font-weight: 400; color: #99AABB;">${goalName}</div>`;
   
   if (isFilmPage) {
@@ -733,8 +750,8 @@ async function startRun(goalInputValue, startInputValue) {
 
 
   // hide start run button, display exit button
-  startBtns.style.display = "none";
-  exitDiv.style.display = "block";
+  runDisplay.style.display = "block";
+  stopwatch.style.display = "block";
 
   // start stopwatch
   start();
@@ -742,6 +759,105 @@ async function startRun(goalInputValue, startInputValue) {
     backgroundMusic('sounds/balatro.mp3');
     music = true
   }
+}
+
+async function continueRun(goalInputValue, startInputValue) {
+  console.log(`contuing at goal: ${goalInputValue} and start: ${startInputValue}`);
+  // let uhhhhhhh = false;
+  // let directors, actors, goalName, topMovies = [];
+  // path = [];
+
+  // get all recent letterboxd tabs
+  const tabs = await chrome.tabs.query({ url: "https://letterboxd.com/*" });
+
+  
+  tab = tabs[0]; // pick the first Letterboxd tab aka the most recent one aka the one the user is on
+
+  if (startInputValue != tabs[0].url) {
+    uhhhhhhh = true;
+    chrome.tabs.sendMessage(tab.id, { type: "navigateToUrl", payload: startInputValue});
+  }
+
+  // console.log("Goal URL before fetching HTML:", goalInputValue);
+  let response = await chrome.runtime.sendMessage({ type: "requestTargetHTML", payload: goalInputValue });
+  let goalHTML = response["html"];
+  let isFilmPage = response["isFilmPage"];
+
+
+
+  goalName = getMovieOrCrewName(goalHTML);
+  if (isFilmPage) {
+    // grab director names and three first actors
+    let response = getDirectorAndCast(goalHTML); 
+    // console.log(response.directors, response.actors);
+    directors = response["directors"];
+    actors = response["actors"];
+
+    if (directors.length === 0) {
+      directors = ["N/A"];
+    }
+    if (actors.length === 0) {
+      actors = ["N/A"];
+    }
+  }
+  else {
+    // grab three first films
+    topMovies = getMoviesFromCrew(goalHTML);
+    if (topMovies.length === 0) {
+      topMovies = ["N/A"];
+    }
+  }
+
+  // clearPages();
+
+  await chrome.scripting.executeScript({    // pretty much refreshes the content script otherwise it's 'out of date' after the
+    target: { tabId: tab.id },              // extension is refreshed and theres nothing to catch the message to refresh
+    files: ["content.js"]
+  });
+
+  // Send a message to the content script running in that tab
+  // if (!uhhhhhhh) {
+  //   chrome.tabs.sendMessage(tab.id, { type: "refresh" });
+  // }
+  // hide goal text and box, display pertinent info and path
+  // runDisplay.querySelector("label[for='goal']").innerHTML = `<b><br><div style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 600;">Target: </div></b><div style="font-size: small; font-family: 'Graphik', sans-serif; font-weight: 400; color: #99AABB;">${goalName}</div>`;
+  
+  if (isFilmPage) {
+    document.getElementById("target").innerHTML = `
+    <div style="display: flex; margin-top: 10px; align-items: stretch;">
+      <div class="flex-child" style="border: 3px solid #444C56; width: 55%; padding: 10px; font-size: 30px; color: #00E054;">
+        ${goalName}
+      </div>
+      <div class="flex-child" style="position: relative; width: 30%; margin-left: 10px; font-size: 20px; gap: 10px; display: flex; flex-direction: column; justify-content: space-between;">
+        <div class="" style="border: 3px solid #444C56; width: 100%; padding: 10px; font-size: 12px;"><span style="color: #40BCF4; font-size: 16px;">${directors.join(', ')}</span><br>DIRECTOR(S)</div>
+        <div class="" style="border: 3px solid #444C56; width: 100%; padding: 10px; font-size: 12px;"><span style="color: #FF8000; font-size: 16px;">${actors.join('<div style="height: 8px;"></div>')}</span><br>STARRING</div>
+      </div>
+    </div><br>`;
+  }
+  else {
+    document.getElementById("target").innerHTML = `
+    <div style="display: flex; margin-top: 10px; align-items: stretch;">
+      <div class="flex-child" style="border: 3px solid #444C56; width: 35%; padding: 10px; font-size: 30px; color: #00E054;">
+        ${goalName}
+      </div>
+      <div class="flex-child" style="border: 3px solid #444C56; padding: 10px; margin-left: 10px; width: 50%; font-size: 12px;">
+        <span style="color: #40BCF4; font-size: 16px;">${topMovies.join('<div style="height: 8px;"></div>')}</span><br>TOP MOVIES
+      </div>
+    </div><br>`;
+  }
+
+
+
+  // hide start run button, display exit button
+  runDisplay.style.display = "block";
+  stopwatch.style.display = "block";
+
+  // start stopwatch
+  // start();
+  // if (!music) {
+  //   backgroundMusic('sounds/balatro.mp3');
+  //   music = true
+  // }
 }
 
 
@@ -856,3 +972,84 @@ letterboxdLink.addEventListener("mouseover", () => {
 stopwatch.addEventListener("mouseover", () => {
   stopwatch.style.cursor = "default";
 });
+
+
+
+
+function displayStats() {
+  clearPages();
+  gamemode.innerHTML = "<b>STATISTICS</b>";
+  gamemode.style.color = "#00E054";
+  
+
+  statsDisplay.style.display = "block";
+  statsBtns.style.display = "block";
+}
+
+function displayStandard() {
+  console.log("displaying standard");
+  clearPages();
+  document.getElementById("standard-mode-display").style.display = "block";
+  gamemode.innerHTML = "<b>STANDARD</b>";
+  gamemode.style.color = "#FF8000";
+  stopwatch.style.display = "block"
+  nav.style.display = "flex";
+  document.getElementById("page-indicator").src = "images/page1.png";
+  
+}
+
+function displayMultiGoal() {
+  clearPages();
+  gamemode.innerHTML = "<b>MULTI-GOAL</b>";
+  gamemode.style.color = "#00E054";
+  stopwatch.style.display = "block"
+  nav.style.display = "flex";
+  document.getElementById("page-indicator").src = "images/page2.png";
+  
+}
+
+function displayEndless() {
+  clearPages();
+  document.getElementById("endless-mode-display").style.display = "block";
+  gamemode.innerHTML = "<b>ENDLESS</b>";
+  gamemode.style.color = "#40BCF4";
+  stopwatch.style.display = "block";
+  nav.style.display = "flex";
+  document.getElementById("page-indicator").src = "images/page3.png";
+  
+}
+
+document.getElementById("nav-left").addEventListener("click", () => {
+  currentPage = pages[(pages.indexOf(currentPage) - 1 + pages.length) % pages.length];
+  navToPage(currentPage);
+  
+});
+
+document.getElementById("nav-right").addEventListener("click", () => {
+  currentPage = pages[(pages.indexOf(currentPage) + 1) % pages.length];
+  navToPage(currentPage);
+  
+});
+
+function navToPage(page) {
+  if (page === "STANDARD") {
+    console.log("displaying standard");
+    displayStandard();
+  }
+  else if (page === "MULTI-GOAL") {
+    displayMultiGoal();
+  }
+  else if (page === "ENDLESS") {
+    displayEndless();
+  }
+}
+
+function clearPages() {
+  document.getElementById("standard-mode-display").style.display = "none";
+  document.getElementById("endless-mode-display").style.display = "none";
+  runDisplay.style.display = "none";
+  statsDisplay.style.display = "none";
+  statsBtns.style.display = "none";
+  stopwatch.style.display = "none";
+  nav.style.display = "none";
+}

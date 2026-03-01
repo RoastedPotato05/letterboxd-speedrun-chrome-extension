@@ -9,7 +9,11 @@
 </head>
 <body>
   <div class="container">
-    <h1 style="font-size: 42px; font-family: 'Graphik', sans-serif; font-weight: 600; letter-spacing: -1px;">Letterboxd Speedrun</h1><br><br>
+    <h1 style="font-size: 42px; font-family: 'Graphik', sans-serif; font-weight: 600; letter-spacing: -1px;">Letterboxd Speedrun</h1><br>
+
+    <div id="gamemode" style="font-size: 24px; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #FF8000"><b>STANDARD</b></div>
+    <hr style="width:100%; border:none; background-color:#52606e; height: 1px"/>
+    
 
     <div id="run-display" style="display: none; font-size: large; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #99AABB;">
       <label style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #99AABB;">TARGET</label>
@@ -22,28 +26,74 @@
       </div>
       <!-- <label for="goal"></label> -->
       <!-- <label for="path"></label> -->
+
+      <div id ="exit-div"><br><br><button class="primary-orange" id="exit" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 60px;">Exit</button></div>
     </div>
 
-    <div id="search-block" style="width: 104%">
-      <div class="search-block" id="start-input-block">
-        <label style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #99AABB;">START</label>
-        <input class="flex-child" id="search-start" placeholder="Starting URL (e.g. https://letterboxd.com/film/tenet/)" value="" style="width: 86%; height: 28px; font-size: 12px; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #f8f8f8;" autocomplete="off" />
-        <button id="random-start" class="flex-child primary-orange" style="width: 8%; height: 28px; position: relative; top: 3px; left: 5px;">
-          <img  src="\images\dice.png" style="width: 20px; height: 20px; position: relative; top: 2px; right: 1%;">
-        </button> 
+    <div id="standard-mode-display" style="display: block">
+      <div id="search-block" style="width: 104%">
+        <div class="search-block" id="start-input-block">
+          <label style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #99AABB;">START</label>
+          <input class="flex-child" id="search-start" placeholder="Starting URL (e.g. https://letterboxd.com/film/tenet/)" value="" style="width: 86%; height: 28px; font-size: 12px; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #f8f8f8;" autocomplete="off" />
+          <button id="random-start" class="flex-child primary-orange" style="width: 8%; height: 28px; position: relative; top: 3px; left: 5px;">
+            <img  src="\images\dice.png" style="width: 20px; height: 20px; position: relative; top: 2px; right: 1%;">
+          </button> 
+        </div>
+
+        <div class="search-block" id="goal-input-block">
+          <label style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #99AABB;">GOAL</label>
+          <input class="flex-child" id="search-goal" placeholder="Goal URL (e.g. https://letterboxd.com/actor/zendaya/)" value="" style="width: 86%; height: 28px; font-size: 12px; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #f8f8f8;" autocomplete="off" />
+          <button id="random-goal" class="flex-child primary-orange" style="width: 8%; height: 28px; position: relative; top: 3px; left: 5px;">
+            <img  src="\images\dice.png" style="width: 20px; height: 20px; position: relative; top: 2px; right: 1%;">
+          </button>
+        </div>
       </div>
 
-      <div class="search-block" id="goal-input-block">
-        <label style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #99AABB;">GOAL</label>
-        <input class="flex-child" id="search-goal" placeholder="Goal URL (e.g. https://letterboxd.com/actor/zendaya/)" value="" style="width: 86%; height: 28px; font-size: 12px; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #f8f8f8;" autocomplete="off" />
-        <button id="random-goal" class="flex-child primary-orange" style="width: 8%; height: 28px; position: relative; top: 3px; left: 5px;">
-          <img  src="\images\dice.png" style="width: 20px; height: 20px; position: relative; top: 2px; right: 1%;">
-        </button>
+      <div id="start-buttons" style="width: 104%;">
+        <br><div class="flex-child" style="width: 47%;">
+          <button id="start-run" class="primary-blue" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 70px;">Start Run</button>
+        </div>
+        <div class = "flex-child" style="width: 25%; padding: 0px 8px">
+          <button id="stats" class="primary-green" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 70px;">Stats</button>
+        </div>
+        <div class="flex-child" style="width: 82px;">
+          <button id="random" class="primary-orange" style="height: 70px; position: relative; top: 8px;">
+            <span id ="dice-png"><img  src="\images\dice.png" style="width: 50px; height: 50px; position: relative; top: 0px"></span>
+            <span id="random-text" style="display: none;">...</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="end-buttons" style="width:104%; display: none;">
+        <div class="flex-child" style="width: 47%;">
+          <button id="return" class="primary-blue" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 60px;">Return</button>
+        </div>
+        <div class="flex-child" style="width: 47%;">
+          <button id="save" type="button" class="primary-green" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; position: relative; right: -4%; height: 60px;">Save</button>
+        </div>
+        <br><br>
+      </div>
+    </div>
+
+    <div id="endless-mode-display" style="display: none">
+        <div class="search-block" id="endless-start-input-block" style="width: 104%">
+          <label style="font-size: large; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #99AABB;">START</label>
+          <input class="flex-child" id="endless-search-start" placeholder="Starting URL (e.g. https://letterboxd.com/film/tenet/)" value="" style="width: 86%; height: 28px; font-size: 12px; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #f8f8f8;" autocomplete="off" />
+          <button id="endless-random-start" class="flex-child primary-orange" style="width: 8%; height: 28px; position: relative; top: 3px; left: 5px;">
+            <img  src="\images\dice.png" style="width: 20px; height: 20px; position: relative; top: 2px; right: 1%;">
+          </button> 
+        </div>
+        <div id="start-buttons" style="width: 104%;">
+        <br><div class="flex-child" style="width: 68%;">
+          <button id="endless-start-run" class="primary-blue" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 70px;">Start Run</button>
+        </div>
+        <div class = "flex-child" style="width: 25%; padding: 0px 8px">
+          <button id="endless-stats" class="primary-green" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 70px;">Stats</button>
+        </div>
       </div>
     </div>
 
     <div id="stats-display" style="display: none; font-size: large; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #99AABB;">
-      STATISTICS
       <div style="width: 104%">
         <span id="wins" class="flex-child" style="border: 3px solid #444C56; width: 40%; margin-top: 10px; padding: 10px; font-size: 20px;">WINS: <span id="winsNum" style="color: #00E054">0</span></span>
         <span id="win-streak" class="flex-child" style="border: 3px solid #444C56; width: 43%; margin-top: 10px; padding: 10px; font-size: 20px;">WIN STREAK: <span id="winStreakNum" style="color: #FF8000">0</span></span>
@@ -58,11 +108,7 @@
         <span id="avg-time" class="flex-child" style="border: 3px solid #444C56; width: 24%; margin-top: 10px; padding: 10px; font-size: 12px;"><span id="avgTimeNum" style="color: #00E054; font-size: 20px;">N/A</span><br>AVERAGE TIME</span>
         <span id="longest-time" class="flex-child" style="border: 3px solid #444C56; width: 119px; margin-top: 10px; padding: 10px; font-size: 12px;"><span id="longestTimeNum" style="color: #40BCF4; font-size: 20px;">N/A</span><br>SLOWEST TIME</span>
       </div><br>
-      <!-- Wins: <span id="total-runs">0</span><br>
-      Win Streak: <span id="successful-runs">0</span><br>
-      Success Rate: <span id="success-rate">0%</span><br>
-      Best Time: <span id="best-time">N/A</span><br>
-      Average Time: <span id="average-time">N/A</span><br> -->
+      
       <div id="stats-bars-nums" style="margin: 0px 10px 30px 30px; display:flex; align-items: flex-end;">
 
       </div>
@@ -71,50 +117,33 @@
       </div>
       <div id="stats-bars-items" style="margin: 0px 10px 30px 30px; font-size: 14px;">
         
-      </div>
+      </div><br>
       
       
-      SAVED RUNS <br>
+      <div style="font-size: 24px; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; color: #00E054"><b>SAVED RUNS</b></div>
+      <hr style="width:100%; border:none; background-color:#52606e; height: 1px"/>
+
       <div id="saved-runs-list">
         <!-- Saved runs will be dynamically inserted here -->
       </div>
     </div>
-    <br>
-
-    <div id="start-buttons" style="width: 104%;">
-      <div class="flex-child" style="width: 47%;">
-        <button id="start-run" class="primary-blue" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 70px;">Start Run</button>
-      </div>
-      <div class = "flex-child" style="width: 25%; padding: 0px 8px">
-        <button id="stats" class="primary-green" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 70px;">Stats</button>
-      </div>
-      <div class="flex-child" style="width: 82px;">
-        <button id="random" class="primary-orange" style="height: 70px; position: relative; top: 8px;">
-          <span id ="dice-png"><img  src="\images\dice.png" style="width: 50px; height: 50px; position: relative; top: 0px"></span>
-          <span id="random-text" style="display: none;">...</span>
-        </button>
-      </div>
-    </div>
-
-    <div id="end-buttons" style="width:104%; display: none;">
-      <div class="flex-child" style="width: 47%;">
-        <button id="return" class="primary-blue" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 60px;">Return</button>
-      </div>
-      <div class="flex-child" style="width: 47%;">
-        <button id="save" type="button" class="primary-green" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; position: relative; right: -4%; height: 60px;">Save</button>
-      </div>
-      <br><br>
-    </div>
 
     
 
+  
     
 
-    <div id ="exit-div" style="display:none;"><br><br><button class="primary-orange" id="exit" style="font-family: 'Graphik', sans-serif; font-weight: 600; font-size: 35px; height: 60px;">Exit</button></div>
-    
     <div id="status" class="status"></div>
 
-    <!-- <hr style="width:100%; border:none; background-color:#99AABB; height: 1px"/> -->
+    
+
+    <footer>
+      <div id="page-nav" style="justify-content: center; display: flex; position: relative; top: -130px; gap: 20px;">
+        <button id="nav-left" class="nav-button"><b>❮</b></button>
+        <img id="page-indicator" src="images/page1.png" style="width: 64px; height: 19px;">
+        <button id="nav-right" class="nav-button"><b>❯</b></button>
+      </div>
+    </footer>
 
     <footer style="background: #161c22; height: 126px" id="page-footer">
       <div class="stopwatch-container" id="stopwatch" style="font-size: large; background: #161c22;">
