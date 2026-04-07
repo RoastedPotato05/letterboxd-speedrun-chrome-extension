@@ -237,7 +237,7 @@ randomBtn.addEventListener("click", async () => {         // listener for random
     files: ["content.js"],
   });
 
-  chrome.tabs.sendMessage(tab.id, { type: "randomPress" });
+  chrome.runtime.sendMessage({ type: "requestPopularMovies" });
 
   if (Object.keys(movies).length === 0) {
     while (Object.keys(movies).length === 0) {
@@ -329,7 +329,7 @@ async function fillRandom() {
       files: ["content.js"],
     });
 
-    chrome.tabs.sendMessage(tab.id, { type: "randomPress" });
+    chrome.runtime.sendMessage({ type: "requestPopularMovies" });
 
     while (Object.keys(movies).length === 0) {
       console.log("Waiting for movies to be populated...");

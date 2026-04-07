@@ -10,11 +10,30 @@ chrome.action.onClicked.addListener(() => {
 
 let cachedPopularHTML = null;
 
+function parsePopularMovies(html) {
+  console.log("Parsing popular movies from HTML...");
+  console.log("Has film-poster:", html.includes("film-poster"));
+  console.log("Has data-film-slug:", html.includes("data-film-slug"));
+  console.log("HTML sample:", html.substring(0, 1000));
+  const items = {};
+  let i = 0;
+  const re = /data-item-slug="([^"]+)"[^>]*data-item-name="([^"]+)"|data-item-name="([^"]+)"[^>]*data-item-slug="([^"]+)"/g;
+  let match;
+  while ((match = re.exec(html)) !== null) {
+    const slug  = match[1] || match[4];
+    const title = match[2] || match[3];
+    items[i] = { title, url: `https://letterboxd.com/film/${slug}/` };
+    console.log(`Parsed movie: ${title} (${slug})`);
+    i++;
+  }
+  return items;
+}
+
 async function fetchPopularPages(totalPages = 10) {
   let combinedHTML = '';
 
   for (let page = 1; page <= totalPages; page++) {
-    const url = `https://letterboxd.com/films/ajax/popular/page/${page}/?esiAllowFilters=true`;
+    const url = `https://letterboxd.com/csi/films/films-browser-list/popular/?esiAllowFilters=true&page=${page}`;
 
     try {
       const res = await fetch(url);
@@ -42,19 +61,25 @@ async function requestTargetHTML(url) {
 }
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  if (msg.type === "requestPopularHTML") {
+  if (msg.type === "requestPopularMovies") {
 
-    // If already fetched, reuse it
+    // If already fetched, reuse cached version
     if (cachedPopularHTML) {
-      sendResponse({ html: cachedPopularHTML });
+      const items = parsePopularMovies(cachedPopularHTML);
+      chrome.runtime.sendMessage({ type: "popularMovies", payload: items });
       return;
     }
 
-    fetchPopularPages()
-      .then(html => sendResponse({ html }))
-      .catch(err => sendResponse({ error: err.message }));
+    console.log("Fetching popular pages...");
 
-    return true; // async
+    fetchPopularPages()
+      .then(html => {
+        console.log("Fetched popular pages: ", html.length);
+        const items = parsePopularMovies(html);
+        console.log("Parsed popular movies: ", items);
+        chrome.runtime.sendMessage({ type: "popularMovies", payload: items });
+      })
+      .catch(err => console.error("fetchPopularPages error:", err));
   }
   if (msg.type === "requestTargetHTML") {
     const url = msg.payload;
