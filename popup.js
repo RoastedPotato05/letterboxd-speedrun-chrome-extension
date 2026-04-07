@@ -557,7 +557,7 @@ exitBtn.addEventListener("click", async () => {         // listener for exiting 
 });
 
 returnBtn.addEventListener("click", async () => {         // listener for restarting on return button click
-  navToPage(currentPage);
+  returnToMenu();
 });
 
 statsReturnBtn.addEventListener("click", async () => {         // listener for returning from stats display
@@ -614,6 +614,12 @@ function returnToMenu() {
   document.getElementById("milliseconds").textContent = "000";
   difference = 0;
   path = [];
+  uhhhhh = false;
+  searchBlock.style.display = "block";
+  startBtns.style.display = "block";
+  exitDiv.style.display = "block";
+  returnBtn.style.display = "none";
+  endBtns.style.display = "none";
   displayStandard();
 }
 
