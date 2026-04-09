@@ -166,12 +166,40 @@
         <div class="flex-child" style="color: #99AABB; font-family: 'Graphik', sans-serif; font-weight: 400; letter-spacing: 1px; margin-left: 12px; position: relative; top: 2px;">Created by: @RoastedPotato05</div>
         <div class="flex-child" style="margin-left: 12px;"><img id="github-link" src="images/github.png" style="width: 20px; height: 20px; position: relative; top: 6px"></div>
         <div class="flex-child" style="margin-left: 12px;"><img id="letterboxd-link" src="images/letterboxd.png" style="width: 20px; height: 20px; position: relative; top: 6px"></div>
+        <div class="flex-child" style="margin-left: 12px;"><img id="info-link" src="images/info.png" style="width: 20px; height: 20px; position: relative; top: 6px"></div>
       </div>
     </footer>
+
+
     <br><br><br><br><br><br><br><br><br>
   </div>
   
+  <div id="info-popup" style="display: none; overflow-y: auto; font-family: 'Graphik', sans-serif; width: 80%; height: 60%; border: 5px solid #00E054; background-color: #161c22; z-index: 10; position: absolute; top: 10%; left: 50%; transform: translate(-50%, -10%)">    
+    <p class="flex-child" style="font-weight: 600; font-size: 30px; margin: 10px 0px 0px 10px">Letterboxd Speedrun</p>
+    <div id="info-exit" class="flex-child" style="color:#FF8000; font-size: 30px; margin-left: 12px; width: 20px; height: 20px; position: absolute; top: 0px; right: 10px; cursor: pointer;">x</div><br><br>
+    <p style="margin: 10px 5px 0px 10px; font-size: 22px">What exactly is a Letterboxd Speedrun?</p>
+    <p style="margin: 11px 5px 0px 20px; font-size: 14px">If you're familiar with 'wikipedia speedruns,' it's the same concept: the goal is to start at one Letterboxd webpage and navigate to the other.</p><br>
+    
+    <p style="margin: 11px 5px 0px 10px; font-weight: 600; font-size: 22px; color:#FF8000;">STANDARD</p>
+    <p style="margin: 11px 5px 0px 20px; font-size: 14px">This is the standard gamemode, choose one starting page and one target page. You can use the small orange dice buttons at each input box to roll for a random webpage for that input, or use the large dice button to quickly start a run with a random start and target webpage.</p><br>
 
+    <p style="margin: 11px 5px 0px 10px; font-weight: 600; font-size: 22px; color:#00E054;">MULTI-GOAL</p>
+    <p style="margin: 11px 5px 0px 20px; font-size: 14px">In this gamemode, you choose one starting page and multiple target pages. You can choose however many target pages you would like, and once the run starts your goal is to go from the starting page to each target page, starting over at the starting page every time.</p><br>
+
+    <p style="margin: 11px 5px 0px 10px; font-weight: 600; font-size: 22px; color:#40BCF4;">ENDLESS</p>
+    <p style="margin: 11px 5px 0px 20px; font-size: 14px">In Endless mode, you simply choose a starting page and a target is randomly chosen, then after reaching the target a new target is randomly chosen. This mode is unique in that it has a lose condition: the player is NOT allowed to revisit pages from previous target paths, but you can still revisit pages in the current target's path. </p><br>
+
+    <br><br>
+    <p style="margin: 10px 0px 0px 10px">Created by @roastedpotato05</p>
+    <br>
+  </div>
+
+  <div id="overlay" style="display: none; position: fixed; width: 200%; height: 200%; background-color: rgba(0,0,0,0.5);top: 0; left: 0; right: 0; bottom: 0;"></div>
+  
   <script src="popup.js"></script>
+
 </body>
+
+
+
 </html>

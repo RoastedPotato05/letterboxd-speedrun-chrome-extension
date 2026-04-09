@@ -29,6 +29,8 @@ const exitBtn = document.getElementById("exit");
 const exitDiv = document.getElementById("exit-div");
 const githubLink = document.getElementById("github-link");
 const letterboxdLink = document.getElementById("letterboxd-link");
+const infoLink = document.getElementById("info-link");
+const infoExit = document.getElementById("info-exit");
 const nav = document.getElementById("page-nav");
 const gamemode = document.getElementById("gamemode");
 
@@ -974,6 +976,21 @@ letterboxdLink.addEventListener("click", () => {
 letterboxdLink.addEventListener("mouseover", () => {
   letterboxdLink.style.cursor = "pointer";
 });
+
+infoLink.addEventListener("mouseover", () => {
+  infoLink.style.cursor = "pointer";
+});
+
+infoLink.addEventListener("click", () => {
+  document.getElementById("info-popup").style.display = "block";
+  document.getElementById("overlay").style.display = "block";
+});
+
+infoExit.addEventListener("click", () => {
+  document.getElementById("info-popup").style.display = "none";
+  document.getElementById("overlay").style.display = "none";
+});
+
 
 stopwatch.addEventListener("mouseover", () => {
   stopwatch.style.cursor = "default";
